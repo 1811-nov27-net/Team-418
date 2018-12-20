@@ -24,3 +24,4 @@ Project 1.5
 	
 Team-418 Members:
 	- John Pot
+	- Justin Sy

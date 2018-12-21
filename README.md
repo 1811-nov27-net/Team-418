@@ -22,7 +22,31 @@ Project 1.5
 				
 	- Presentation on Thursday, January 3rd.
 	
+Music Library Description:
+	
+	Music Management system that enables users to play and organize music.
+Using a SQL Server hosted on Azure, we will store a database of songs that 
+will be updated through Admin users. Songs will then link to corresponding 
+Youtube pages where the music can be played. Users will be able to search 
+the database and sort songs based on song name, artist, and album. They will 
+also be able to store a list of their favorite songs.
+
+	
 Team-418 Members:
 	- John Pot
 	- Justin Sy
 	- Devin Rouse
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

@@ -10,9 +10,9 @@ namespace Library
     {
         public static List<Song> Songs = new List<Song>();
 
-        public static Song GetById()
+        public static Song GetById(int id)
         {
-
+            return Songs.FirstOrDefault(s => s.Id == id);
         }
 
         public Song()
@@ -20,15 +20,15 @@ namespace Library
             Songs.Add(this);
             Id = NextId;
         }
-
-        private static int currentId = 0;
-
+        
         public int NextId
         {
             get
             {
-                int highest = Songs.Max(s => s.Id);
-                return ++currentId;
+                int? highest = Songs.Max(s => s.Id);
+                if (highest == null)
+                    return 1;
+                return (int)(highest + 1);
             }
         }
 

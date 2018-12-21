@@ -18,7 +18,8 @@ namespace Library
 
         // LatestRelease will pull an artist's latest album through the Album table
         // need an AlbumID, or name assigned LatestRelease, waiting on DB finalization
+        public Albums LatestRelease { get; set; }
 
-        public string Website { get; set; } // string holding URL to artist's Website (if it exists)
+        public string WebsiteUrl { get; set; } // string holding URL to artist's Website (if it exists)
     }
 }

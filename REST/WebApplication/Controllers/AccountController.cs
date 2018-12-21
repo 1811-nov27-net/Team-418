@@ -108,5 +108,11 @@ namespace WebApplication.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        public string LoggedInUser()
+        {
+            return User.Identity.Name;
+        }
     }
 }

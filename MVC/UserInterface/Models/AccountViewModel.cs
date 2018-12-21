@@ -4,17 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication.Models
+namespace UserInterface.Models
 {
     public class AccountViewModel
     {
-        [Required]
-        [DataType(DataType.Time)]
+        [Required(ErrorMessage = "User name required.")]
+        [DataType(DataType.Text)]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is required.")]
         [DataType(DataType.Password)]
-        [MinLength(6)]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long!")]
         public string Password { get; set; }
     }
 }

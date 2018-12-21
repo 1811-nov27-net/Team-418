@@ -43,18 +43,15 @@ namespace WebApplication
                     options.Password.RequireLowercase = true;
                     options.Password.RequireNonAlphanumeric = true;
                     options.Password.RequireUppercase = true;
-                    // Minimum length
                     options.Password.RequiredLength = 6;
                     options.Password.RequiredUniqueChars = 1;
-
-                    options.User.AllowedUserNameCharacters =
-                            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                    
                 })
                 .AddEntityFrameworkStores<IdentityDbContext>();
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.Name = "TempApiAuth";
+                options.Cookie.Name = "UserAuthentication";
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
                 options.Events = new CookieAuthenticationEvents
                 {

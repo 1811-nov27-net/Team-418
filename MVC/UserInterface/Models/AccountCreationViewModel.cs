@@ -10,6 +10,7 @@ namespace UserInterface.Models
     {
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Confirmed password must match!")]
+        [Display(Name = "Password", Prompt = "Enter Password")]
         public string ConfirmPassword { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace UserInterface.Controllers
         public AccountController(HttpClient client) : base(client)
         {
         }
-        
+
         // Go to login view 
         public ActionResult Login()
         {
@@ -65,6 +65,35 @@ namespace UserInterface.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> Logout()
+        {
+            try
+            {
+                HttpRequestMessage request = CreateRequestToService(HttpMethod.Get, "api/Account/Logout");
+                HttpResponseMessage response = await Client.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // TODO: Error handling
+                    return View();
+                }
+
+                bool success = PassCookiesToClient(response);
+                if (!success)
+                {
+                    // TODO: Error handling
+                    return View("Error");
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception)
+            {
+                return View();
+            }
+        }
+
+        [HttpGet]
         public ActionResult CreateNewAccount()
         {
             return View();
@@ -74,7 +103,7 @@ namespace UserInterface.Controllers
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return View();
                 }
@@ -83,30 +112,44 @@ namespace UserInterface.Controllers
                 HttpRequestMessage request = CreateRequestToService(HttpMethod.Post, "api/Account/Register", formAccount);
                 HttpResponseMessage response = await Client.SendAsync(request);
 
-                if(!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
-                    if (response.StatusCode == HttpStatusCode.Forbidden)
+                    switch(response.StatusCode)
                     {
-                        ModelState.AddModelError("Password", "Incorrect username or password");
+                        // Using forbidden as password unacceptable
+                        case HttpStatusCode.Forbidden:
+                            {
+                                ModelState.AddModelError("Password", "Password does not meet required criteria.");
+                                break;
+                            }
+                        // Using conflict as username already exists
+                        case HttpStatusCode.Conflict:
+                            {
+                                ModelState.AddModelError("UserName", "User name taken.");
+                                break;
+                            }
+                        default:
+                            {
+                                break;
+                            }
                     }
-
                     return View();
                 }
 
                 bool success = PassCookiesToClient(response);
-                if(!success)
+                if (!success)
                 {
                     return View("Error");
                 }
 
-                return RedirectToAction("Index", "Home"); 
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception)
             {
                 return View();
             }
         }
-        
+
         // Take the cookie from the service REST response and add it to the 
         //  header of the response we are currently using
         private bool PassCookiesToClient(HttpResponseMessage apiResponse)

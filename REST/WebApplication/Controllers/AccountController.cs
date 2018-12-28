@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -59,7 +63,31 @@ namespace WebApplication.Controllers
 
                 if (!userCreationResult.Succeeded)
                 {
-                    return BadRequest(userCreationResult);
+                    if (userCreationResult.Errors.Count() <= 0)
+                        return BadRequest();
+
+                    switch(userCreationResult.Errors.First().Code)
+                    {
+                        // Invalid user name
+                        case "InvalidUserName":
+                        case "DuplicateUserName":
+                            {
+                                return StatusCode((int)HttpStatusCode.Conflict);
+                            }
+                        // Invalid password
+                        case "PasswordTooShort":
+                        case "PasswordRequiresNonAlphanumeric":
+                        case "PasswordRequiresDigit":
+                        case "PasswordRequiresLower":
+                        case "PasswordRequresUpper":
+                            {
+                                return StatusCode((int)HttpStatusCode.Forbidden);
+                            }
+                        default:
+                            {
+                                return BadRequest();
+                            }
+                    }
                 }
 
                 // Set up user roles

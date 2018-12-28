@@ -8,6 +8,7 @@ using UserInterface.Controllers;
 
 namespace UserInterface.Filters
 {
+    //public class GetLoggedInUserFilter : IAsyncActionFilter
     public class GetLoggedInUserFilter : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -28,4 +29,5 @@ namespace UserInterface.Filters
             var resultContext = await next();
         }
     }
+
 }

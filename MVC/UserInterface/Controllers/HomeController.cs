@@ -5,17 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UserInterface.Models;
-using UserInterface.Filters;
-using System.Net.Http;
 
 namespace UserInterface.Controllers
 {
-    public class HomeController : AServiceController
+    public class HomeController : Controller
     {
-        public HomeController(HttpClient client) : base(client)
-        {
-        }
-        
         public IActionResult Index()
         {
             return View();

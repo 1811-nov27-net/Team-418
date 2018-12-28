@@ -3,32 +3,42 @@
 @{
     ViewData["Title"] = "Login";
 }
+<link rel="stylesheet" href="~/css/Login.css" />
 
-<h1>Login</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Login">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
+<!-- LOGIN FORM -->
+<div class="text-center" style="padding:50px 0">
+    <div class="logo">login</div>
+    <!-- Main Form -->
+    <div class="login-form-1">
+        <form id="login-form" class="text-left" asp-action="Login">
+            <div class="login-form-main-message"></div>
+            <div class="main-login-form">
+                <div class="login-group">
+                    <div class="form-group">
+                        <div asp-validation-summary="ModelOnly" class="form-invalid"></div>
+                        <div class="form-group">
+                            <label asp-for="UserName" class="sr-only"></label>
+                            <input asp-for="UserName" class="form-control" placeholder="enter username" />
+                            <span asp-validation-for="UserName" class="form-invalid"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password" class="sr-only"></label>
+                            <input asp-for="Password" class="form-control" placeholder="enter password" />
+                            <span asp-validation-for="Password" class="form-invalid"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Login" class="login-button" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </div>
-<div>
-    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="CreateNewAccount">Create New Account</a>
+<div class="text-center" style="padding:50px 0">
+    <div>
+        <a class="logo" asp-area="" asp-controller="Account" asp-action="CreateNewAccount">Create New Account</a>
+    </div>
 </div>
 
 @section Scripts {

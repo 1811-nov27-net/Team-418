@@ -9,12 +9,12 @@ namespace WebApplication.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Artist { get; set; }
+        public int Artist { get; set; }
         public string Album { get; set; }
-        public TimeSpan PlayTime { get; set; }
+        public TimeSpan? PlayTime { get; set; }
         public string Link { get; set; }
         public string Genre { get; set; }
-        public DateTime Release { get; set; }
-        public bool Cover { get; set; }
+        public DateTime? Release { get; set; }
+        public bool? Cover { get; set; }
     }
 }

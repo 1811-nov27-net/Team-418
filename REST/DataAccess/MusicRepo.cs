@@ -494,16 +494,25 @@ namespace DataAccess
         }
 
         // Get all songs - users can search all songs to find new music
-        public IEnumerable<Songs> GetAllSongs()
+        public IEnumerable<Library.Song> GetAllSongs()
         {
+            ICollection<Library.Song> returnUs = null;
+            IEnumerable<Songs> getUs = null;
             try
             {
-                return _db.Songs.AsNoTracking().ToList();
+                getUs = _db.Songs.AsNoTracking().ToList();
             }
             catch (ArgumentNullException)
             {
                 return null;
-            }         
+            }
+
+            foreach (var item in getUs)
+            {
+                returnUs.Add(Mapper.Map(item));
+            }
+
+            return returnUs;
         }
 
         public IEnumerable<Songs> GetAllSongsByArtist(int artistId)

@@ -13,9 +13,13 @@
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
               crossorigin="anonymous"
-              integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE="/>
+              integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />
     </environment>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="~/js/dropdown.js"></script>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/Login.css"/>
+    <link rel="stylesheet" href="~/css/dropdown.css" />
 </head>
 <body>
     <header>
@@ -32,12 +36,38 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Library" asp-action="Index">Song Library</a>
                         </li>
                     </ul>
                 </div>
             </div>
+
+            <div class="dropdown float-right">
+                @if (ViewBag.LoggedInUser == "")
+                {
+                    <a class="account">My Account</a>
+                }
+                else
+                {
+                    <a class="account">@ViewBag.LoggedInUser</a>
+                }
+                <div class="submenu">
+                    <ul class="root">
+                        @if (ViewBag.LoggedInUser == "")
+                        {
+                            <li><a href="Account/Login">Login</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="User/Home">Profile</a></li>
+                            <li><a href="Account/Logout">Logout</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
         </nav>
+
+
     </header>
     <div class="container">
         <partial name="_CookieConsentPartial" />

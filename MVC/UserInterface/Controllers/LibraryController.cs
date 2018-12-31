@@ -113,6 +113,7 @@ namespace UserInterface.Controllers
             // this is a string, so it must be deserialized into a C# object.
             // we could use DataContractSerializer, .NET built-in, but it's more awkward
             // than the third-party Json.NET aka Newtonsoft JSON.
+            SongViewModel.Songs.Clear();
             List<SongViewModel> songs = JsonConvert.DeserializeObject<List<SongViewModel>>(responseBody);
             SongViewModel.Songs = songs;
             return RedirectToAction(nameof(SongView));

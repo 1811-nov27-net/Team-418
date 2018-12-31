@@ -5,21 +5,24 @@ using System.Text;
 
 namespace Library
 {
-    class Artists
+    public class Artists
     {
+        // Id of Artists (set in DB)
         public int Id { get; set; }
-
-        [Required]
+        // Name of artist
         public string Name { get; set; }
-
-        // referece to a Locations table possibly?
-
-        public DateTime Formed { get; set; } // again, we only need the Date, not the Time of when the band was formed
-
-        // LatestRelease will pull an artist's latest album through the Album table
-        // need an AlbumID, or name assigned LatestRelease, waiting on DB finalization
-        public Albums LatestRelease { get; set; }
-
-        public string WebsiteUrl { get; set; } // string holding URL to artist's Website (if it exists)
+        // City where Artist originated from
+        public string City { get; set; }
+        // State/province where artist originated from
+        public string Stateproviince { get; set; }
+        // Country of origin
+        public string Country { get; set; }
+        // date when artist/group formed
+        // set as new DateTime(int year, int day, int month)
+        public DateTime? Formed { get; set; }
+        // Date of artist's most recent release in DB
+        public DateTime? LatestRelease { get; set; }
+        // Url to artist's website (if possible)
+        public string Website { get; set; }
     }
 }

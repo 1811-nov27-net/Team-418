@@ -18,133 +18,89 @@ namespace UserInterface.Controllers
             //  database data
             Random rand = new Random(DateTime.Now.Millisecond);
             if (SongViewModel.Songs.Count == 0)
-                for (int i = 1; i <= 10; ++i)
+            {
+                // Actual songs.
+                new SongViewModel()
+                {
+                    Album = "Trench",
+                    Artist = "Twenty One Pilots",
+                    Name = "Chlorine",
+                    PlayTime = new TimeSpan(0, 5, 24),
+                    Link = "Wc79sjzjNuo"
+                };
+                new SongViewModel()
+                {
+                    Album = "Trench",
+                    Artist = "Twenty One Pilots",
+                    Name = "Pet Cheetah",
+                    PlayTime = new TimeSpan(0, 3, 18),
+                    Link = "VGMmSOsNAdc"
+                };
+                new SongViewModel()
+                {
+                    Album = "Blurryface",
+                    Artist = "Twenty One Pilots",
+                    Name = "Ride",
+                    PlayTime = new TimeSpan(0, 3, 34),
+                    Link = "Pw-0pbY9JeU"
+                };
+                new SongViewModel()
+                {
+                    Album = "Blurryface",
+                    Artist = "Twenty One Pilots",
+                    Name = "Polarize",
+                    PlayTime = new TimeSpan(0, 3, 46),
+                    Link = "MiPBQJq49xk"
+                };
+
+                // Dummy songs
+                for (int i = 1; i <= 100; ++i)
                 {
                     new SongViewModel()
                     {
-                        Album  = "Album "  + (rand.Next() % 100).ToString(),
+                        Album = "Album " + (rand.Next() % 100).ToString(),
                         Artist = "Artist " + (rand.Next() % 100).ToString(),
-                        Name   = "Name "   + (rand.Next() % 100).ToString(),
-                        Link   = "Link "   + (rand.Next() % 100).ToString()
+                        Name = "Name " + (rand.Next() % 100).ToString(),
+                        PlayTime = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
+                        Link = "invalid link."
                     };
                 }
+            }
         }
         
-        public IActionResult Index()
+        public ActionResult SongView(bool playSong = false)
         {
+            TempData["VideoPlaying"] = playSong;
             return View(SongViewModel.Songs);
         }
 
-        [HttpGet]
-        public ActionResult AddSong()
+        public ActionResult PlaySong()
         {
-            return View();
+            bool playSong = true;
+            return RedirectToAction(nameof(SongView), new { playSong });
         }
-        [HttpPost]
-        public ActionResult AddSong(SongViewModel formSong)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View();
-                }
-
-                return RedirectToAction(nameof(Index));
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        [HttpGet]
-        public ActionResult RemoveSong(int id)
-        {
-            return View(SongViewModel.GetById(id));
-        }
-        [HttpPost]
-        public ActionResult RemoveSong(SongViewModel songToRemove)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View();
-                }
-
-                SongViewModel.Songs.Remove(SongViewModel.GetById(songToRemove.Id));
-                SongViewModel.Songs.Remove(songToRemove);
-
-                return RedirectToAction(nameof(Index));
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        [HttpGet]
-        public ActionResult Details(int id)
-        {
-            return View(SongViewModel.GetById(id));
-        }
-
-        [HttpGet]
-        public ActionResult Edit(int id)
-        {
-            return View(SongViewModel.GetById(id));
-        }
-        [HttpPost]
-        public ActionResult Edit(SongViewModel formSong)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                SongViewModel libSong = SongViewModel.GetById(formSong.Id);
-                SongViewModel.Songs.Remove(formSong);
-
-                libSong.Name = formSong.Name;
-                libSong.Album = formSong.Album;
-                libSong.Artist = formSong.Artist;
-                libSong.Link = formSong.Link;
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
+        
 
         [HttpGet]
         public ActionResult SortByName()
         {
             SongViewModel.UpdateSongSort(SongViewModel.SortMethod.Name);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(SongView));
         }
         [HttpGet]
         public ActionResult SortByArtist()
         {
             SongViewModel.UpdateSongSort(SongViewModel.SortMethod.Artist);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(SongView));
         }
         [HttpGet]
         public ActionResult SortByAlbum()
         {
             SongViewModel.UpdateSongSort(SongViewModel.SortMethod.Album);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(SongView));
         }
     }
 }

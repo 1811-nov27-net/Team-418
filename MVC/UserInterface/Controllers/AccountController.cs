@@ -56,7 +56,7 @@ namespace UserInterface.Controllers
                 }
 
                 // successful login
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Library");
             }
             catch (Exception)
             {
@@ -85,7 +85,7 @@ namespace UserInterface.Controllers
                     return View("Error");
                 }
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Library");
             }
             catch (Exception)
             {
@@ -142,7 +142,7 @@ namespace UserInterface.Controllers
                     return View("Error");
                 }
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Library");
             }
             catch (Exception)
             {

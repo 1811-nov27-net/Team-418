@@ -1,0 +1,45 @@
+﻿@model IEnumerable<UserInterface.Models.SongViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<body>
+    <div class="container col-12" style="font-size: 20px; margin:200px 7px 2px 100px">
+        @foreach (var item in Model)
+        {
+            <div class="row">
+                <div class="col-1">
+                    <i class="float-right far fa-play-circle fa-s play-button"
+                       data-youtubeid="@item.Link"></i>
+                </div>
+                <div class="col-5" style="padding-left:0px">
+                    <a class="text-black-50 float-left font-weight-bold" asp-action="SongDetails">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8" style="padding-left:125px">
+                    <a class="text-black-50" asp-action="SongDetails">
+                        @Html.DisplayFor(modelItem => item.Artist)
+                    </a>
+
+                    <i class="text-black-50 fas fa-bolt fa-xs" style="padding-left:10px; padding-right:10px"></i>
+
+                    <a class="text-black-50" asp-action="SongDetails">
+                        @Html.DisplayFor(modelItem => item.Album)
+                    </a>
+                </div>
+                <div class="col-4">
+                    <a class="text-black-50 float-right">
+                        @Html.DisplayFor(modelItem => item.PlayTime)
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="container fixed-bottom" id="player"
+         style="margin:0px 5px 10px 1100px">
+    </div>
+    <script src="~/js/VideoControls.js"></script>
+</body>

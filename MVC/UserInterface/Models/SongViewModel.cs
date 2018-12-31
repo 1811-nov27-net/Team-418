@@ -32,6 +32,7 @@ namespace UserInterface.Models
         public string Name { get; set; }
         public string Artist { get; set; }
         public string Album { get; set; }
+        public TimeSpan PlayTime { get; set; }
         public string Link { get; set; }
 
 

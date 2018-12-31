@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - UserInterface</title>
+    <title>@ViewData["Title"] - Teapot Jams</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -17,58 +17,76 @@
     </environment>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="~/js/dropdown.js"></script>
+    <link rel="stylesheet" href="~/css/fontawesome.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/Login.css"/>
-    <link rel="stylesheet" href="~/css/dropdown.css" />
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UserInterface</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Library" asp-action="Index">Song Library</a>
-                        </li>
-                    </ul>
-                </div>
+
+    @* Top middle navigation links *@
+    <div class="container col-7 fixed-top text-center rounded navbar-light bg-light"
+         style="margin-top:30px;
+                height:100px;
+                padding-top:20px;
+                font-size:20px">
+        <div class="row">
+            <div class="col-4" style="margin-right:0px">
+                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Songs</a>
             </div>
-
-            <div class="dropdown float-right">
-                @if (ViewBag.LoggedInUser == "")
-                {
-                    <a class="account">My Account</a>
-                }
-                else
-                {
-                    <a class="account">@ViewBag.LoggedInUser</a>
-                }
-                <div class="submenu">
-                    <ul class="root">
-                        @if (ViewBag.LoggedInUser == "")
-                        {
-                            <li><a href="Account/Login">Login</a></li>
-                        }
-                        else
-                        {
-                            <li><a href="User/Home">Profile</a></li>
-                            <li><a href="Account/Logout">Logout</a></li>
-                        }
-                    </ul>
-                </div>
+            <div class="col-4">
+                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Albums</a>
             </div>
-        </nav>
+            <div class="col-4">
+                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Artists</a>
+            </div>
+        </div>
+    </div>
+
+    @* Left vertical navigation links *@
+    @* Logo *@
+    <div class="container-fluid position-fixed navbar-light bg-light rounded"
+         style="margin:-20px 10px 100px -20px;
+                width:300px;
+                height:10000px">
+        <a asp-controller="Library" asp-action="SongView">
+            <img src="~/img/teapot.jpg" height="200" width="200" />
+        </a>
+
+        <ul class="nav flex-column left-nav">
+            <li style="margin:10px 5px 10px 5px">
+                <i class="fas fa-search" style="padding-right:5px"></i>
+                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Search</a>
+            </li>
+            <li style="margin:10px 5px 10px 5px">
+                <i class="fas fa-home" style="padding-right:5px"></i>
+                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Home</a>
+            </li>
+            <li style="margin:10px 5px 10px 5px">
+                <i class="fas fa-user" style="padding-right:5px"></i>
+                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">My Account</a>
+            </li>
+        </ul>
+    </div>
+
+    @* Bottom Player Controls *@
+    <div class="col-8 container fixed-bottom navbar-light bg-light"
+         style="margin:0px 0px 0px 200px;
+                padding-top:25px;
+                height:80px">
+        <div class="row">
+            <div class="col-4">
+                <i class="fas fa-backward fa-2x"></i>
+            </div>
+            <div class="col-4">
+                <i id="play-button" class="fas fa-play fa-2x"></i>
+            </div>
+            <div class="col-4">
+                <i class="fas fa-forward fa-2x"></i>
+            </div>
+        </div>
+    </div>
 
 
-    </header>
     <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
@@ -76,11 +94,6 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2018 - UserInterface - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -101,6 +114,7 @@
         </script>
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/VideoControls.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

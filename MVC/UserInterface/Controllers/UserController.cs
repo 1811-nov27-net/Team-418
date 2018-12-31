@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UserInterface.Models;
 
 namespace UserInterface.Controllers
 {
-    public class UserController : Controller
+    public class UserController : AServiceController
     {
-        public IActionResult Index()
+        public UserController(HttpClient client) : base(client)
         {
-            return View();
         }
 
-
-
-        public ActionResult Login()
+        [HttpGet]
+        //public async Task<ActionResult> Profile(int id)
+        public ActionResult Profile(UserViewModel user)
         {
-            return View();
+            return View(user);
         }
-        
+
     }
 }

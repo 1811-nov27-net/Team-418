@@ -9,43 +9,22 @@ namespace Library
     public class Song
     {
         public static List<Song> Songs = new List<Song>();
-
-        public static Song GetById(int id)
-        {
-            return Songs.FirstOrDefault(s => s.Id == id);
-        }
-
-        public Song()
-        {
-            Songs.Add(this);
-            Id = NextId;
-        }
-        
-        public int NextId
-        {
-            get
-            {
-                int? highest = Songs.Max(s => s.Id);
-                if (highest == null)
-                    return 1;
-                return (int)(highest + 1);
-            }
-        }
-
+        // Id of song (assigned in DB)
         public int Id { get; set; }
-
-        [Required]
+        // Name of the song
         public string Name { get; set; }
-
-        // key to artists, may be multiple artists for one song
-
+        // Name of Artist(s)
+        public string Artist { get; set; }
+        // Genre of song
         public string Genre { get; set; }
-
-        //public string Length { get; set; } // length of song(?)
-
-        public DateTime InitialRelease { get; set; } // we only need the Date, not the time
-        // DateTime has a struct Date that allows us to access only the Date
-
-        public string SongUrl { get; set; } // URL link to song, saved as a string
+        // Length/duration of the song
+        public TimeSpan? Length { get; set; }
+        // Release date of song, set as New DateTime(int year, int day, int month)
+        public DateTime? InitialRelease { get; set; }
+        // Is this song a cover?
+        public bool? Cover { get; set; }
+        // URL link for song (using mainly youtube, so we use the unique identifier
+        // attached at the end of the link, after "watch?v="
+        public string Link { get; set; }
     }
 }

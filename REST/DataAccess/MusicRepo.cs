@@ -35,13 +35,6 @@ namespace DataAccess
 
             //----------------------------------------------------------------
 
-            if (BindFormDataToArtist(formData).GetType().Equals(typeof(string)))
-            {
-                return (string)BindFormDataToArtist(formData);
-            }
-
-            Artists newArtist = (Artists)BindFormDataToArtist(formData);
-
             // Secondary check to ensure another operation hasn't inserted the same data as this task since the first check
             if (GetArtistByName(newArtist.ArName) != null)
             {
@@ -496,23 +489,7 @@ namespace DataAccess
         // Get all songs - users can search all songs to find new music
         public IEnumerable<Library.Song> GetAllSongs()
         {
-            ICollection<Library.Song> returnUs = null;
-            IEnumerable<Songs> getUs = null;
-            try
-            {
-                getUs = _db.Songs.AsNoTracking().ToList();
-            }
-            catch (ArgumentNullException)
-            {
-                return null;
-            }
-
-            foreach (var item in getUs)
-            {
-                returnUs.Add(Mapper.Map(item));
-            }
-
-            return returnUs;
+            return Mapper.Map(_db.Songs.AsNoTracking());
         }
 
         public IEnumerable<Songs> GetAllSongsByArtist(int artistId)
@@ -951,74 +928,6 @@ namespace DataAccess
             }
 
             return "true";
-        }
-
-        /* 
-        * ----------------------------------------------------------------------
-        * ---------| BIND - TIE SUBMITTED INFO TO DATA ACCESS OBJECTS |---------
-        * ----------------------------------------------------------------------
-       */
-
-        public object BindFormDataToArtist(Dictionary<string, string> formData)
-        {
-            // Declare the string variables for artist info, passing data in from form
-            string name = formData["name"];
-            string city = formData["city"];
-            string stateProvince = formData["stateProvince"];
-            string country = formData["country"];
-            string website = formData["website"];
-
-            // Declare non-string variables for artist info, set as null until checks to parse them into the proper data type are performed
-            DateTime? formed = null;
-            DateTime? lastestRelease = null;
-
-            if (name == null)
-            {
-                // If the name from the form data is null, set error message and return it immediately
-                return "CRITICAL ERROR: Artist name is required and was not provided.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            if (formData["formed"] != null)
-            {
-                try
-                {
-                    // If date of band formation was provided, attempt to parse it as a DateTime
-                    formed = DateTime.Parse(formData["formed"]);
-                }
-                catch (FormatException)
-                {
-                    // If band formation info could not be parsed as a DateTime, set error message and return it immediately
-                    return "ERROR: Band formation date information is not recognizable as a valid date.  Operation abandoned.";
-                }
-            }
-
-            if (formData["lastestRelease"] != null)
-            {
-                try
-                {
-                    // If date of latest release was provided, attempt to parse it as a DateTime
-                    lastestRelease = DateTime.Parse(formData["lastestRelease"]);
-                }
-                catch (FormatException)
-                {
-                    // If latest release info could not be parsed as a DateTime, set error message and return it immediately
-                    return "ERROR: Latest release date information is not recognizable as a valid date.  Operation abandoned.";
-                }
-            }
-
-            // Create new artist
-            Artists newArtist = new Artists
-            {
-                ArName = name,
-                ArCity = city,
-                ArStateprovince = stateProvince,
-                ArCountry = country,
-                ArFormed = formed,
-                ArLatestrelease = lastestRelease,
-                ArWebsite = website
-            };
-
-            return newArtist;
-        }
+        }      
     }
 }

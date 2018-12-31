@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using UserInterface.Models;
 using UserInterface.Filters;
 using System.Net.Http;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace UserInterface.Controllers
 {
@@ -19,6 +21,22 @@ namespace UserInterface.Controllers
             Random rand = new Random(DateTime.Now.Millisecond);
             if (SongViewModel.Songs.Count == 0)
             {
+                // Artist
+                // name
+                // city
+                // date formed
+                // date of latest release
+                // website
+
+                // Album
+                // name
+                // artist
+                // release date
+                // genre
+
+                // Requests
+                // Artist
+
                 // Actual songs.
                 new SongViewModel()
                 {
@@ -27,6 +45,10 @@ namespace UserInterface.Controllers
                     Name = "Chlorine",
                     PlayTime = new TimeSpan(0, 5, 24),
                     Link = "Wc79sjzjNuo"
+                    // genre
+                    // release
+                    // cover
+
                 };
                 new SongViewModel()
                 {
@@ -68,16 +90,37 @@ namespace UserInterface.Controllers
             }
         }
         
-        public ActionResult SongView(bool playSong = false)
+        public ActionResult SongView()
         {
-            TempData["VideoPlaying"] = playSong;
             return View(SongViewModel.Songs);
+        }
+
+        public async Task<ActionResult> SongView2()
+        {
+            // send "GET api/Temperature" to service, get headers of response
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Get, "api/song");
+            HttpResponseMessage response = await Client.SendAsync(request);
+
+            // (if status code is not 200-299 (for success))
+            if (!response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Library", "SongView");
+            }
+
+            // get the whole response body (second await)
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            // this is a string, so it must be deserialized into a C# object.
+            // we could use DataContractSerializer, .NET built-in, but it's more awkward
+            // than the third-party Json.NET aka Newtonsoft JSON.
+            List<SongViewModel> songs = JsonConvert.DeserializeObject<List<SongViewModel>>(responseBody);
+            SongViewModel.Songs = songs;
+            return RedirectToAction(nameof(SongView));
         }
 
         public ActionResult PlaySong()
         {
-            bool playSong = true;
-            return RedirectToAction(nameof(SongView), new { playSong });
+            return RedirectToAction(nameof(SongView));
         }
         
 

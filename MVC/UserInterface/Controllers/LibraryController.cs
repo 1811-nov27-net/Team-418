@@ -125,7 +125,7 @@ namespace UserInterface.Controllers
         }
         
 
-        [HttpGet]
+        [HttpGet]   
         public ActionResult SortByName()
         {
             SongViewModel.UpdateSongSort(SongViewModel.SortMethod.Name);

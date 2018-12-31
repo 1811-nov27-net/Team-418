@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DataAccess
 {
-    public class MusicRepo
+    public class MusicRepo : IMusicRepo
     {
         private readonly _1811proj1_5Context _db;
 
@@ -36,20 +36,21 @@ namespace DataAccess
             //----------------------------------------------------------------
 
             // Secondary check to ensure another operation hasn't inserted the same data as this task since the first check
-            if (GetArtistByName(newArtist.ArName) != null)
-            {
-                return "ERROR: Artist already exists in the database.  Operation abandoned.";
-            }
+            //if (GetArtistByName(newArtist.ArName) != null)
+            //{
+            //    return "ERROR: Artist already exists in the database.  Operation abandoned.";
+            //}
 
-            // Add new artist to the database and save changes
-            _db.Artists.Add(newArtist);
-            _db.SaveChanges();
+            //// Add new artist to the database and save changes
+            //_db.Artists.Add(newArtist);
+            //_db.SaveChanges();
 
-            // Get the artist that was just added
-            Artists addedArtist = GetArtistByName(newArtist.ArName);
+            //// Get the artist that was just added
+            //Artists addedArtist = GetArtistByName(newArtist.ArName);
 
-            // Return string of the new artist's ID if it was successfully added
-            return addedArtist.ArId.ToString();
+            //// Return string of the new artist's ID if it was successfully added
+            //return addedArtist.ArId.ToString();
+            return "true";
         }
 
         // Add a new album to the database

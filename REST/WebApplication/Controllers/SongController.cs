@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccess;
+using Library;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Models;
@@ -12,48 +14,40 @@ namespace WebApplication.Controllers
     [ApiController]
     public class SongController : ControllerBase
     {
-        // dummy data for testing purposes right now, will eliminate later
-        public static List<SongModel> Data = new List<SongModel>
+        public IMusicRepo Repo { get; }
+
+        public SongController(IMusicRepo repo)
         {
-            new SongModel
-            {
-                Id = 1,
-                Name = "POP/STARS",
-                Artist = "ft Madison Beer, (G)I-DLE, Jaira Burns",
-                Album = "",
-                PlayTime = new TimeSpan(0, 3, 22),
-                Link = "UOxkGD8qRB4",
-                Genre = "KPop",
-                Release = new DateTime(2018, 11, 3),
-                Cover = false
-            },
-            new SongModel
-            {
-                Id = 2,
-                Name = "Last Surprise",
-                Artist = "Shoji Meguro, Lyn Inaizumi",
-                Album = "Persona 5 Original Soundtrack",
-                PlayTime = new TimeSpan(0, 3, 55),
-                Link = "eFVj0Z6ahcI",
-                Genre = "Jazz/Jpop",
-                Release = new DateTime(2017, 1, 17),
-                Cover = false
-            }
-        };
+            Repo = repo;
+        }
 
         // GET: api/Song
         [HttpGet]
         public ActionResult<IEnumerable<SongModel>> Get()
         {
+            List<SongModel> dispSongs = null;
+
             try
             {
-                return Data;
+                dispSongs = Repo.GetAllSongs().Select(x => new SongModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Artist = x.Artist,
+                    PlayTime = x.Length,
+                    Genre = x.Genre,
+                    Release = x.InitialRelease,
+                    Cover = x.Cover,
+                    Link = x.Link
+                }).ToList();
             }
             catch (Exception ex)
             {
 
                 return StatusCode(500, ex);
             }
+
+            return dispSongs;
         }
 
         // GET: api/Song/5

@@ -19,14 +19,14 @@ namespace WebApplication.Controllers
         {
             Repo = repo;
         }
-
+        /*
         // GET: api/Album
         [HttpGet]
         public ActionResult<IEnumerable<AlbumModel>> Get()
         {
             
         }
-
+        */
         // GET: api/Album/5
         [HttpGet("{id}", Name = "Get")]
         public string Get(int id)

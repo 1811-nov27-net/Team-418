@@ -10,22 +10,27 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 // 3. This function creates an <iframe> (and YouTube player)
 //    after the API code downloads.
 var player;
+var set;
 function onYouTubeIframeAPIReady() {
+    if (set)
+        return;
+    set = true;
     player = new YT.Player('player', {
         height: '200',
-        width: '355',
-        videoId: 'M7lc1UVf-VE',
+        width: '200',
+        //videoId: 'M7lc1UVf-VE',
         events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
         }
+
 
     });
 }
 
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
-    event.target.playVideo();
+    playVideo();
 }
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.ENDED) {
@@ -41,12 +46,15 @@ function onPlayerEnd() {
 
 function stopVideo() {
     player.stopVideo();
+    SetButtonPlay();
 }
 function pauseVideo() {
     player.pauseVideo();
+    SetButtonPlay();
 }
 function playVideo() {
     player.playVideo();
+    SetButtonPause();
 }
 
 function PlayToggleMain() {
@@ -121,13 +129,15 @@ function ToggleMiniButtonsOff(currentButton) {
 function PlayToggleMini(event) {
     let playButton = event.target;
 
+    
+
     if (player.videoId != playButton.dataset.youtubeid) {
         player.videoId = playButton.dataset.youtubeid;
         player.loadVideoById(playButton.dataset.youtubeid);
+        //ToggleMiniButtonsOff();
         PlayToggleMain();
         SetButtonPause()
-        ToggleMiniButtonsOff();
-        ToggleMiniButton(playButton);
+        SetMiniButtonPause(playButton);
         return;
     }
     

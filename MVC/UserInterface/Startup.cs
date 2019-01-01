@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserInterface.Filters;
+using UserInterface.Models;
 
 namespace UserInterface
 {
@@ -19,6 +20,104 @@ namespace UserInterface
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            // Dummy Data
+            if (AlbumViewModel.Albums.Count == 0)
+            //if(false)
+            {
+                Random rand = new Random(DateTime.Now.TimeOfDay.Milliseconds);
+                if (SongViewModel.Songs.Count == 0)
+                {
+                    ArtistViewModel artist = new ArtistViewModel
+                    {
+                        Name = "Twenty One Pilots"
+                    };
+                    AlbumViewModel trench = new AlbumViewModel
+                    {
+                        Name = "Trench"
+                    };
+                    AlbumViewModel blurryface = new AlbumViewModel
+                    {
+                        Name = "Blurryface"
+                    };
+                    trench.Artist = artist;
+                    blurryface.Artist = artist;
+                    artist.Albums.Add(trench);
+                    artist.Albums.Add(blurryface);
+
+                    // Actual songs.
+                    SongViewModel song = new SongViewModel()
+                    {
+                        Album = trench,
+                        Artist = artist,
+                        Name = "Chlorine",
+                        PlayTime = new TimeSpan(0, 5, 24),
+                        Link = "Wc79sjzjNuo"
+
+                    };
+                    trench.Songs.Add(song);
+                    song = new SongViewModel()
+                    {
+                        Album = trench,
+                        Artist = artist,
+                        Name = "Pet Cheetah",
+                        PlayTime = new TimeSpan(0, 3, 18),
+                        Link = "VGMmSOsNAdc"
+                    };
+                    trench.Songs.Add(song);
+                    song = new SongViewModel()
+                    {
+                        Album = blurryface,
+                        Artist = artist,
+                        Name = "Ride",
+                        PlayTime = new TimeSpan(0, 3, 34),
+                        Link = "Pw-0pbY9JeU"
+                    };
+                    blurryface.Songs.Add(song);
+                    song = new SongViewModel()
+                    {
+                        Album = blurryface,
+                        Artist = artist,
+                        Name = "Polarize",
+                        PlayTime = new TimeSpan(0, 3, 46),
+                        Link = "MiPBQJq49xk"
+                    };
+                    blurryface.Songs.Add(song);
+                }
+                for (int i = 0; i < 10; ++i)
+                {
+                    ArtistViewModel artist = new ArtistViewModel
+                    {
+                        Name = "ArtistName " + (rand.Next() % 100).ToString(),
+                    };
+
+                    for (int j = 0; j < 5; ++j)
+                    {
+
+                        AlbumViewModel album = new AlbumViewModel
+                        {
+                            Name = "AlbumName " + (rand.Next() % 100).ToString(),
+                        };
+
+
+                        List<SongViewModel> songs = new List<SongViewModel>();
+                        for (int k = 0; k < 3; ++k)
+                        {
+                            songs.Add(new SongViewModel
+                            {
+                                Album = album,
+                                Artist = artist,
+                                Name = "Name " + (rand.Next() % 100).ToString(),
+                                PlayTime = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
+                                Link = "invalid link." + (rand.Next() % 100).ToString()
+                            });
+                        }
+                        album.Songs = songs;
+                        artist.Albums.Add(album);
+                        album.Artist = artist;
+                    }
+                }
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -65,7 +164,7 @@ namespace UserInterface
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Library}/{action=SongView}/{id?}");
+                    template: "{controller=Song}/{action=SongIndex}/{id?}");
             });
         }
     }

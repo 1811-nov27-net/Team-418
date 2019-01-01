@@ -24,64 +24,61 @@
 <body>
 
     @* Top middle navigation links *@
-    <div class="container col-7 fixed-top text-center rounded navbar-light bg-light"
-         style="margin-top:30px;
-                height:100px;
-                padding-top:20px;
-                font-size:20px">
-        <div class="row">
-            <div class="col-4" style="margin-right:0px">
-                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView2">Songs</a>
+    <div class="container col-4 mb-5">
+        <div class="row h5 font-weight-bold">
+            <div class="col-4 d-flex justify-content-center">
+                <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Songs</a>
             </div>
-            <div class="col-4">
-                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Albums</a>
+            <div class="col-4 d-flex justify-content-center">
+                <a class="text-black-50" asp-area="" asp-controller="Album" asp-action="AlbumIndex">Albums</a>
             </div>
-            <div class="col-4">
-                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Artists</a>
+            <div class="col-4 d-flex justify-content-center">
+                <a class="text-black-50" asp-area="" asp-controller="Artist" asp-action="ArtistIndex">Artists</a>
             </div>
         </div>
     </div>
 
     @* Left vertical navigation links *@
-    @* Logo *@
-    <div class="container-fluid position-fixed navbar-light bg-light rounded"
-         style="margin:-20px 10px 100px -20px;
-                width:300px;
-                height:10000px">
-        <a asp-controller="Library" asp-action="SongView">
-            <img src="~/img/teapot.jpg" height="200" width="200" />
-        </a>
+    <div class="container position-fixed d-flex flex-column">
+        <div class="col-3">
+            <a asp-controller="Song" asp-action="SongIndex">
+                <img src="~/img/teapot.jpg" height="200" width="200" />
+            </a>
+        </div>
+        <div class="col-3" style="margin-top:20px; margin-left:20px">
+            <i class="fas fa-search" style="padding-right:10px"></i>
+            <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Search</a>
+        </div>
+        <div class="col-3" style="margin-top:20px; margin-left:20px">
+            <i class="fas fa-home" style="padding-right:10px"></i>
+            <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Home</a>
+        </div>
+        <div class="col-3" style="margin-top:20px; margin-left:20px">
+            <i class="fas fa-user" style="padding-right:10px"></i>
+            <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">My Account</a>
+        </div>
+    </div>
 
-        <ul class="nav flex-column left-nav">
-            <li style="margin:10px 5px 10px 5px">
-                <i class="fas fa-search" style="padding-right:5px"></i>
-                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Search</a>
-            </li>
-            <li style="margin:10px 5px 10px 5px">
-                <i class="fas fa-home" style="padding-right:5px"></i>
-                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">Home</a>
-            </li>
-            <li style="margin:10px 5px 10px 5px">
-                <i class="fas fa-user" style="padding-right:5px"></i>
-                <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Library" asp-action="SongView">My Account</a>
-            </li>
-        </ul>
+    @* Right vertical navigation links *@
+    <div class="container col-12 position-fixed d-flex flex-column align-items-end text-center">
+        <div class="col-3">
+            <div id="player"></div>
+        </div>
     </div>
 
     @* Bottom Player Controls *@
-    <div class="col-8 container fixed-bottom navbar-light bg-light"
-         style="margin:0px 0px 0px 200px;
-                padding-top:25px;
-                height:80px">
-        <div class="row">
-            <div class="col-4">
-                <i class="font-weight-bold text-black-50 fas fa-backward fa-2x"></i>
-            </div>
-            <div class="col-4">
-                <i id="play-button" class="font-weight-bold text-black-50 fas fa-play fa-2x"></i>
-            </div>
-            <div class="col-4">
-                <i class="font-weight-bold text-black-50 fas fa-forward fa-2x"></i>
+    <div class="card fixed-bottom shadow-lg " style="width:10000px;height:90px;margin-left:-20px">
+        <div class="col-5 container fixed-bottom mb-4">
+            <div class="row">
+                <div class="col-4 d-flex justify-content-center">
+                    <i class="font-weight-bold text-black-50 fas fa-backward fa-2x"></i>
+                </div>
+                <div class="col-4 d-flex justify-content-center">
+                    <i id="play-button" class="font-weight-bold text-black-50 fas fa-play fa-2x"></i>
+                </div>
+                <div class="col-4 d-flex justify-content-center">
+                    <i class="font-weight-bold text-black-50 fas fa-forward fa-2x"></i>
+                </div>
             </div>
         </div>
     </div>

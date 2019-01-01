@@ -1,0 +1,32 @@
+﻿@model IEnumerable<UserInterface.Models.AlbumViewModel>
+
+@{
+    ViewData["Title"] = "AlbumIndex";
+}
+
+<body>
+    <div class="container col-12 row d-flex justify-content-center">
+        @foreach (var item in Model)
+        {
+            <div class="col-3 card-click card shadow-sm rounded border m-2">
+                <div class="card-body">
+                    <a id="main-card-button" class="card-text text-black-50 font-weight-bold d-flex justify-content-center" 
+                        asp-area="" asp-action="AlbumView" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                    <br/>
+                    <i class="card-text text-black-50 fas fa-bolt fa-lg d-flex justify-content-center"></i>
+                    <br/>
+                    <a class="card-text text-black-50 d-flex justify-content-center small"
+                        asp-area="" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.Artist.Id">
+                        @Html.DisplayFor(modelItem => item.Artist.Name)
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <script src="~/js/AlbumCards.js"></script>
+
+</body>
+

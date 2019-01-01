@@ -1,0 +1,30 @@
+﻿@model UserInterface.Models.ArtistViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<body>
+    <div class="container col-12 row d-flex justify-content-center">
+        <div class="container row d-flex justify-content-center">
+            <h3 class="text-black-50 font-weight-bold">@Model.Name</h3>
+        </div>
+        @foreach (var item in Model.Albums)
+        {
+            <div class="col-3 card-click card shadow-sm rounded border m-2">
+                <div class="card-body">
+                    <a id="main-card-button" class="card-text text-black-50 font-weight-bold d-flex justify-content-center"
+                       asp-area="" asp-controller="Album" asp-action="AlbumView" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                    <br />
+                    <i class="fas fa-bolt fa-lg text-black-50 card-text d-flex justify-content-center"></i>
+                </div>
+            </div>
+        }
+    </div>
+
+    <script src="~/js/AlbumCards.js"></script>
+
+</body>
+

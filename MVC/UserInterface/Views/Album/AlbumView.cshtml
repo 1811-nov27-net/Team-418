@@ -1,0 +1,56 @@
+﻿@model UserInterface.Models.AlbumViewModel
+
+@{
+    ViewData["Title"] = "AlbumView";
+}
+<body>
+    <div class="container col-9">
+        <div class="container" style="margin-bottom:20px">
+            <div class="col-5">
+                <h3 class="text-black-50 font-weight-bold d-flex justify-content-center">@Model.Name</h3>
+                <i class="fas fa-headphones text-black-50 d-flex justify-content-center fa-xs"></i>
+                <a class="text-black-50 d-flex justify-content-center" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@Model.Artist.Id">
+                    @Html.DisplayFor(modelItem => Model.Artist.Name)
+                </a>
+            </div>
+        </div>
+        <br />
+        @foreach (var item in Model.Songs)
+        {
+            <div class="card card-click m-2 shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-1 mt-4">
+                            <i id="main-card-button" class="d-flex justify-content-end font-weight-bold text-black-50 far fa-play-circle fa-s play-button"
+                               data-youtubeid="@item.Link"></i>
+                        </div>
+                        <div class="h5 col-7 d-flex justify-content-start mt-2 text-black-50 font-weight-bold play-button"
+                             data-youtubeid="@item.Link">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 d-flex justify-content-center">
+                            <a class="text-black-50" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.Artist.Id">
+                                @Html.DisplayFor(modelItem => item.Artist.Name)
+                            </a>
+
+                            <i class="text-black-50 fas fa-bolt fa-xs p-2"></i>
+
+                            <a class="text-black-50" asp-controller="Album" asp-action="SongDetails" asp-route-id="@item.Album.Id">
+                                @Html.DisplayFor(modelItem => item.Album.Name)
+                            </a>
+                        </div>
+                        <div class="col-6 pr-4">
+                            <a class="text-black-50 d-flex justify-content-end">
+                                @Html.DisplayFor(modelItem => item.PlayTime)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <script src="~/js/AlbumCards.js"></script>
+</body>
+

@@ -14,7 +14,7 @@ namespace Library
         // City where Artist originated from
         public string City { get; set; }
         // State/province where artist originated from
-        public string Stateproviince { get; set; }
+        public string Stateprovince { get; set; }
         // Country of origin
         public string Country { get; set; }
         // date when artist/group formed

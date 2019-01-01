@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DataAccess
 {
-    public class MusicRepo : IMusicRepo
+    public class MusicRepo
     {
         private readonly _1811proj1_5Context _db;
 
@@ -23,219 +23,77 @@ namespace DataAccess
          */
 
         // Add a new artist to the database
-        public string AddArtist(Dictionary<string, string> formData)
+        public string AddArtist(Library.Artists artist)
         {
-            // Method is accepting a dictionary where both the key and value are strings.  
-            // This is assuming that the controller that will eventually call this method with accept the form data (probably/likely in an IFormCollection);
-            // then it will process the information into a dictionary to feed to this method in the repo.  
-            // The controller *will* need to pass null values into the dictionary it sends where information was not provided.
-            // (assuming that the IFormCollection doesn't autmoatically inject nulls into missing values)
+            if (GetArtistByName(artist.Name) != null)
+            {
+                return "ERROR: Artist already exists in the database.  Operation abandoned.";
+            }
 
-            // A string is being returned for user feedback, and also to return a value to end the method early if errors occur that we don't want committed to the database
+            Artists newArtist = Mapper.Map(artist);
 
-            //----------------------------------------------------------------
-
-            // Secondary check to ensure another operation hasn't inserted the same data as this task since the first check
-            //if (GetArtistByName(newArtist.ArName) != null)
-            //{
-            //    return "ERROR: Artist already exists in the database.  Operation abandoned.";
-            //}
-
-            //// Add new artist to the database and save changes
-            //_db.Artists.Add(newArtist);
-            //_db.SaveChanges();
-
-            //// Get the artist that was just added
-            //Artists addedArtist = GetArtistByName(newArtist.ArName);
-
-            //// Return string of the new artist's ID if it was successfully added
-            //return addedArtist.ArId.ToString();
+            try
+            {
+                _db.Artists.Add(newArtist);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Artist could not be added to the database.  Operation abandoned.  Please contact your system administrator";
+            }
+            
             return "true";
         }
 
         // Add a new album to the database
-        public string AddAlbum(Dictionary<string, string> formData)
+        public string AddAlbum(Library.Albums album)
         {
-            // Declare user to be set and returned immediately if there is any error
-            string returnMessage = null;
 
-            // Declare the string variables for album info, passing data in from form
-            string name = formData["name"];
-            string genre = formData["genre"];
-
-            // Declare non-string variables for artist info, set as null until checks to parse them into the proper data type are performed
-            int artistId = -1;
-            DateTime? release = null;
-
-            if (name == null)
+            if (GetAlbumByNameAndArtist(album.Name, GetArtistByName(album.Artist).Id) != null)
             {
-                // If the name from the form data is null, set error message and return it immediately
-                returnMessage = "CRITICAL ERROR: Album name is required and was not provided.  Operation abandoned.  Please contact your system administrator immediately.";
-                return returnMessage;
+                return "ERROR: Album already exists in the database.  Operation abandoned.";
             }
 
-            if (formData["artistId"] != null)
+            Albums newAlbum = Mapper.Map(album);
+
+            newAlbum.AlArtist = GetArtistByName(album.Artist).Id;
+
+            try
             {
-                try
-                {
-                    artistId = Int32.Parse(formData["artistId"]);
-                }
-                catch (FormatException)
-                {
-                    returnMessage = "ERROR: Artist ID information is not recognizable as a valid ID.  Operation abandoned.";
-                    return returnMessage;
-                }
+                _db.Albums.Add(newAlbum);
+                _db.SaveChanges();
             }
-            else
+            catch (Exception)
             {
-                returnMessage = "CRITICAL ERROR: Artist ID is required and was not provided.  Operation abandoned.  Please contact your system administrator immediately.";
-                return returnMessage;
+                return "CRITICAL ERROR: Artist could not be added to the database.  Operation abandoned.  Please contact your system administrator";
             }
 
-            if (GetAlbumByNameAndArtist(name, artistId) != null)
-            {
-                returnMessage = "ERROR: Album already exists in the database.  Operation abandoned.";
-                return returnMessage;
-            }              
-
-            if (formData["release"] != null)
-            {
-                try
-                {
-                    release = DateTime.Parse(formData["release"]);
-                }
-                catch (FormatException)
-                {
-                    release = null;
-                    returnMessage = "ERROR: Release date information is not recognizable as a valid date.  Operation abandoned.";
-                    return returnMessage;
-                }
-            }
-
-            Albums newAlbum = new Albums
-            {
-                AlName = name,
-                AlArtist = artistId,
-                AlRelease = release,
-                AlGenre = genre
-            };
-
-            _db.Albums.Add(newAlbum);
-            _db.SaveChanges();
-
-            // Get the album that was just added
-            Albums addedAlbum = GetAlbumByNameAndArtist(newAlbum.AlName, newAlbum.AlArtist);
-
-            return addedAlbum.AlId.ToString();
+            return "true";
         }
 
         // Add song to database
-        public string AddSong(Dictionary<string, string> formData)
+        public string AddSong(Library.Song song)
         {
-            // Similar setup as AddArtistToDatabase()
-            string returnMessage = null;
-
-            string name = formData["name"];
-            int artistId = -1;           
-            string genre = formData["genre"];         
-            string link = formData["link"];
-
-            TimeSpan? length = null;
-            DateTime? initialRelease = null;
-            bool? cover = null;
-
-            if (name == null)
+            if (GetSongByNameAndArtist(song.Name, GetArtistByName(song.Artist).Id) != null)
             {
-                // If the name from the form data is null, set error message and return it immediately
-                returnMessage = "CRITICAL ERROR: Song name is required and was not provided.  Operation abandoned.  Please contact your system administrator immediately.";
-                return returnMessage;
+                return "ERROR: Song already exists in the database.  Operation abandoned.";
             }
 
-            if (formData["artistId"] != null)
-            {
-                try
-                {
-                    artistId = Int32.Parse(formData["artistId"]);
-                }
-                catch (FormatException)
-                {
-                    returnMessage = "ERROR: Artist ID information is not recognizable as a valid ID.  Operation abandoned.";
+            Songs newSong = Mapper.Map(song);
 
-                    return returnMessage;
-                }
-            }
-            else
+            newSong.SArtist = GetArtistByName(song.Artist).Id;
+
+            try
             {
-                returnMessage = "CRITICAL ERROR: Artist ID is required and was not provided.  Operation abandoned.  Please contact your system administrator immediately.";
-                return returnMessage;
+                _db.Songs.Add(newSong);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be added to the database.  Operation abandoned.  Please contact your system administrator";
             }
 
-            if (GetSongByNameAndArtist(name, artistId) != null)
-            {
-                returnMessage = "ERROR: Song already exists in the database.  Operation abandoned.";
-                return returnMessage;
-            }
-
-            if (formData["length"] != null)
-            {
-                try
-                {
-                    length = TimeSpan.Parse(formData["length"]);
-                }
-                catch (FormatException)
-                {
-                    length = null;
-                    returnMessage = "ERROR: Song length information is not recognizable as a valid time.  Operation abandoned.";
-                    return returnMessage;
-                }
-            }
-
-            if (formData["initialRelease"] != null)
-            {
-                try
-                {
-                    initialRelease = DateTime.Parse(formData["initialRelease"]);
-                }
-                catch (FormatException)
-                {
-                    initialRelease = null;
-                    returnMessage = "ERROR: Initial release date information is not recognizable as a valid date.  Operation abandoned.";
-                    return returnMessage;
-                }
-            }
-
-            if (formData["cover"] != null)
-            {
-                try
-                {
-                    cover = Boolean.Parse(formData["cover"]);
-                }
-                catch (FormatException)
-                {
-                    cover = null;
-                    returnMessage = "ERROR: Cover information not recognizable as a boolean.  Operation abandoned.";
-                    return returnMessage;
-                }
-            }
-
-            Songs newSong = new Songs
-            {
-                SName = name,
-                SArtist = artistId,
-                SLength = length,
-                SGenre = genre,
-                SInitialrelease = initialRelease,
-                SCover = cover,
-                SLink = link
-            };
-
-            _db.Songs.Add(newSong);
-            _db.SaveChanges();
-
-            // Get the song that was just added
-            Songs addedSong = GetSongByNameAndArtist(newSong.SName, newSong.SArtist);
-
-            return addedSong.SId.ToString();
+            return "true";
         }
 
         public string AddSongToAlbum(int songId, int albumId)
@@ -271,7 +129,7 @@ namespace DataAccess
 
         public string AddUserFavorite(int userId, int songId)
         {
-            if (GetOneFavoriteForUser(userId, songId) != null)
+            if (_db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking() != null)
             {
                 return "ERROR: User already has selected song listed as a favorite.  Operation abandoned.";
             }
@@ -302,7 +160,7 @@ namespace DataAccess
 
         public string AddCover(int originalId, int coverId)
         {
-            if (GetCover(originalId, coverId) != null)
+            if (_db.Covers.Where(o => o.COriginal == originalId).Where(c => c.CCover == coverId).AsNoTracking() != null)
             {
                 return "ERROR: There is already an entry in the database matching the cover version to the original.  Operation abandoned.";
             }
@@ -331,26 +189,41 @@ namespace DataAccess
             return "true";
         }
 
-        public string AddUser(string name, bool admin)
+        public string AddUser(Library.Users user)
         {
-            if (name == null)
+            if(_db.Users.Where(u => u.UName == user.Name).AsNoTracking().FirstOrDefault() != null)
             {
-                return "CRITICAL ERROR: User name is required and was not provided.  Operation abandoned.  Please contact your system administrator immediately.";
+                return "ERROR: User already exists in the database.  Operation abandoned.";
             }
 
-            if (GetUserByName(name) != null)
+            Users newUser = Mapper.Map(user);
+
+            try
             {
-                return "ERROR: There is already a user with this user name.  Please select a different user name.  Operation abandoned.";
+                _db.Users.Add(newUser);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: User could not be added to the database.  Operation abandoned.  Please contact your system administrator";
             }
 
-            Users newUser = new Users
-            {
-                UName = name,
-                UAdmin = admin
-            };
+            return "true";
+        }
 
-            _db.Users.Add(newUser);
-            _db.SaveChanges();
+        public string AddRequest(Library.PendingRequests request)
+        {
+            PendingRequests newRequest = Mapper.Map(request);
+
+            try
+            {
+                _db.PendingRequests.Add(newRequest);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Request could not be added to the database.  Operation abandoned.  Please contact your system administrator";
+            }
 
             return "true";
         }
@@ -361,11 +234,11 @@ namespace DataAccess
          * ---------------------------------------------------
         */
 
-        public AlbumSongs GetSongFromAlbum(int songId, int albumId)
+        public Library.AlbumSongs GetSongFromAlbum(int songId, int albumId)
         {
             try
             {
-                return _db.AlbumSongs.Where(s => s.AsSong ==  songId).Where(al => al.AsAlbum == albumId).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.AlbumSongs.Where(s => s.AsSong ==  songId).Where(al => al.AsAlbum == albumId).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -374,11 +247,11 @@ namespace DataAccess
             }
         }
 
-        public Artists GetArtistByName(string name)
+        public Library.Artists GetArtistByName(string name)
         {
             try
             {
-                return _db.Artists.Where(a => a.ArName == name).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.Artists.Where(a => a.ArName == name).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -387,11 +260,11 @@ namespace DataAccess
             }
         }
 
-        public Artists GetArtistById(int id)
+        public Library.Artists GetArtistById(int id)
         {
             try
             {
-                return _db.Artists.Where(a => a.ArId == id).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.Artists.Where(a => a.ArId == id).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -400,11 +273,11 @@ namespace DataAccess
             }
         }
 
-        public Albums GetAlbumByNameAndArtist(string name, int artistId)
+        public Library.Albums GetAlbumByNameAndArtist(string name, int artistId)
         {
             try
             {
-                return _db.Albums.Where(a => a.AlName == name).Where(ar => ar.AlArtist == artistId).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.Albums.Where(a => a.AlName == name).Where(ar => ar.AlArtist == artistId).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -413,11 +286,11 @@ namespace DataAccess
             }
         }
 
-        public IEnumerable<Albums> GetAllAlbumsByArtist(int artistId)
+        public IEnumerable<Library.Albums> GetAllAlbumsByArtist(int artistId)
         {
             try
             {
-                return _db.Albums.Where(ar => ar.AlArtist == artistId).AsNoTracking().ToList();
+                return Mapper.Map(_db.Albums.Where(ar => ar.AlArtist == artistId).AsNoTracking().ToList());
             }
             catch (ArgumentNullException)
             {
@@ -426,11 +299,11 @@ namespace DataAccess
             }
         }
 
-        public Albums GetAlbumById(int id)
+        public Library.Albums GetAlbumById(int id)
         {
             try
             {
-                return _db.Albums.Where(a => a.AlId == id).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.Albums.Where(a => a.AlId == id).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -438,11 +311,11 @@ namespace DataAccess
             }
         }
 
-        public Songs GetSongByNameAndArtist(string name, int artistId)
+        public Library.Song GetSongByNameAndArtist(string name, int artistId)
         {
             try
             {
-                return _db.Songs.Where(a => a.SName == name).Where(ar => ar.SArtist == artistId).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.Songs.Where(a => a.SName == name).Where(ar => ar.SArtist == artistId).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -451,11 +324,11 @@ namespace DataAccess
             }
         }
 
-        public Songs GetSongById(int id)
+        public Library.Song GetSongById(int id)
         {
             try
             {
-                 return _db.Songs.Where(s => s.SId == id).AsNoTracking().FirstOrDefault();
+                 return Mapper.Map(_db.Songs.Where(s => s.SId == id).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -463,11 +336,11 @@ namespace DataAccess
             }          
         }
 
-        public Users GetUserById(int id)
+        public Library.Users GetUserById(int id)
         {
             try
             {
-                return _db.Users.Where(u => u.UId == id).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.Users.Where(u => u.UId == id).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -475,11 +348,11 @@ namespace DataAccess
             }
         }
 
-        public Users GetUserByName(string name)
+        public Library.Users GetUserByName(string name)
         {
             try
             {
-                return _db.Users.Where(u => u.UName == name).AsNoTracking().FirstOrDefault();
+                return Mapper.Map(_db.Users.Where(u => u.UName == name).AsNoTracking().FirstOrDefault());
             }
             catch (ArgumentNullException)
             {
@@ -490,14 +363,14 @@ namespace DataAccess
         // Get all songs - users can search all songs to find new music
         public IEnumerable<Library.Song> GetAllSongs()
         {
-            return Mapper.Map(_db.Songs.AsNoTracking());
+            return Mapper.Map(_db.Songs.Include(a => a.SArtistNavigation).AsNoTracking());
         }
 
-        public IEnumerable<Songs> GetAllSongsByArtist(int artistId)
+        public IEnumerable<Library.Song> GetAllSongsByArtist(int artistId)
         {
             try
             {
-                return _db.Songs.Where(ar => ar.SArtist == artistId).AsNoTracking().ToList();
+                return Mapper.Map(_db.Songs.Where(ar => ar.SArtist == artistId).AsNoTracking().ToList());
             }
             catch (ArgumentNullException)
             {
@@ -506,11 +379,11 @@ namespace DataAccess
         }
 
         // Get all favorites for a user based on User ID
-        public IEnumerable<Favorites> GetFavoritesByUser(int userId)
+        public IEnumerable<Library.Favorites> GetFavoritesByUser(int userId)
         {
             try
             {
-                return _db.Favorites.Where(u => u.FUser == userId).AsNoTracking().ToList();
+                return Mapper.Map(_db.Favorites.Where(u => u.FUser == userId).AsNoTracking().ToList());
             }
             catch (ArgumentNullException)
             {
@@ -518,11 +391,11 @@ namespace DataAccess
             }
         }
 
-        public IEnumerable<Favorites> GetFavoritesBySong(int songId)
+        public IEnumerable<Library.Favorites> GetFavoritesBySong(int songId)
         {
             try
             {
-                return _db.Favorites.Where(u => u.FSong == songId).AsNoTracking().ToList();
+                return Mapper.Map(_db.Favorites.Where(u => u.FSong == songId).AsNoTracking().ToList());
             }
             catch (ArgumentNullException)
             {
@@ -530,11 +403,11 @@ namespace DataAccess
             }
         }
 
-        public Favorites GetOneFavoriteForUser(int userId, int songId)
+        public IEnumerable<Library.Song> GetCoversByOriginal(int originalId)
         {
             try
             {
-                return _db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking().FirstOrDefault();
+                return _db.Covers.Where(c => c.COriginal == originalId).AsNoTracking().Select(x => GetSongById(x.CCover)).ToList();
             }
             catch (ArgumentNullException)
             {
@@ -542,35 +415,11 @@ namespace DataAccess
             }
         }
 
-        public Covers GetCover(int originalId, int coverId)
+        public Library.Song GetOriginalByCover(int coverId)
         {
             try
             {
-                return _db.Covers.Where(o => o.COriginal == originalId).Where(c => c.CCover == coverId).AsNoTracking().FirstOrDefault();
-            }
-            catch (ArgumentNullException)
-            {
-                return null;
-            }
-        }
-
-        public IEnumerable<Covers> GetCoversByOriginal(int originalId)
-        {
-            try
-            {
-                return _db.Covers.Where(c => c.COriginal == originalId).AsNoTracking().ToList();
-            }
-            catch (ArgumentNullException)
-            {
-                return null;
-            }
-        }
-
-        public Covers GetOriginalByCover(int coverId)
-        {
-            try
-            {
-                return _db.Covers.Where(c => c.CCover == coverId).AsNoTracking().FirstOrDefault();
+                return _db.Covers.Where(c => c.CCover == coverId).AsNoTracking().Select(x => GetSongById(x.CCover)).FirstOrDefault();
             }
             catch (ArgumentNullException)
             {
@@ -584,23 +433,18 @@ namespace DataAccess
         * ------------------------------------------------------
        */
 
-        public string UpdateArtist(Artists libArtist)
+        public string UpdateArtist(Library.Artists libArtist)
         {
-            Artists updateMe = null;
-            try
-            {
-                 updateMe = _db.Artists.Where(ar => ar.ArName == libArtist.ArName).FirstOrDefault();
-            }
-            catch (ArgumentNullException)
+            Artists updateMe = _db.Artists.Where(ar => ar.ArName == libArtist.Name).FirstOrDefault(); ;
+
+            if (updateMe == null)
             {
                 return "ERROR: Artist could not be retrieved from database to update.  Operation abandoned.";
-            }
-            
-            // updateMe = Mapper.Map(LibararyArtistToDataContextArtist);
+            }      
 
             try
             {
-                _db.Artists.Update(updateMe);
+                _db.Artists.Update(Mapper.Map(libArtist));
                 _db.SaveChanges();
             }
             catch (Exception)
@@ -611,6 +455,74 @@ namespace DataAccess
             return "true";
         }
 
+        public string UpdateAlbum(Library.Albums libAlbum)
+        {
+            Albums updateMe = _db.Albums.Where(al => al.AlName == libAlbum.Name).FirstOrDefault(); ;
+
+            if (updateMe == null)
+            {
+                return "ERROR: Album could not be retrieved from database to update.  Operation abandoned.";
+            }
+
+            try
+            {
+                _db.Albums.Update(Mapper.Map(libAlbum));
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Album could not be updated.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public string UpdateSong(Library.Song libSong)
+        {
+            Songs updateMe = _db.Songs.Where(s => s.SName == libSong.Name).FirstOrDefault(); ;
+
+            if (updateMe == null)
+            {
+                return "ERROR: Song could not be retrieved from database to update.  Operation abandoned.";
+            }
+
+            try
+            {
+                _db.Songs.Update(Mapper.Map(libSong));
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be updated.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public string UpdateUser(Library.Users libUser)
+        {
+            Users updateMe = _db.Users.Where(u => u.UName == libUser.Name).FirstOrDefault(); ;
+
+            if (updateMe == null)
+            {
+                return "ERROR: User could not be retrieved from database to update.  Operation abandoned.";
+            }
+
+            try
+            {
+                _db.Users.Update(Mapper.Map(libUser));
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: User could not be updated.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+
+
         /* 
         * --------------------------------------------------------
         * ---------| DELETE - REMOVE INFO FROM DATABASE |---------
@@ -619,32 +531,29 @@ namespace DataAccess
 
         public string RemoveSongFromAlbum(int songId, int albumId)
         {
-            AlbumSongs removeMe = GetSongFromAlbum(songId, albumId);
+            AlbumSongs removeMe = _db.AlbumSongs.Where(s => s.AsSong == songId).Where(al => al.AsAlbum == albumId).FirstOrDefault();
 
             if (removeMe == null)
             {
                 return "ERROR: Song to be removed does not exist on album.  Operation abandoned.";
             }
-            else
+
+            try
             {
-                try
-                {
-                    _db.AlbumSongs.Remove(removeMe);
-                    _db.SaveChanges();
+                _db.AlbumSongs.Remove(removeMe);
+                _db.SaveChanges();              
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be removed from album.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
 
-                    return "true";
-                }
-                catch (Exception)
-                {
-
-                    return "CRITICAL ERROR: Song could not be removed from album.  Operation abandoned.  Please contact your system administrator immediately.";
-                }
-            } 
+            return "true";
         }
 
         public string RemoveSongFromAllAlbums(int songId)
         {
-            IEnumerable<AlbumSongs> removeUs = _db.AlbumSongs.Where(al => al.AsSong == songId).AsNoTracking().ToList();
+            IEnumerable<AlbumSongs> removeUs = _db.AlbumSongs.Where(al => al.AsSong == songId).ToList();
 
             if (removeUs == null)
             {
@@ -668,7 +577,7 @@ namespace DataAccess
 
         public string RemoveAllSongsFromAlbum(int albumId)
         {
-            IEnumerable<AlbumSongs> removeUs = _db.AlbumSongs.Where(al => al.AsAlbum == albumId).AsNoTracking().ToList();
+            IEnumerable<AlbumSongs> removeUs = _db.AlbumSongs.Where(al => al.AsAlbum == albumId).ToList();
 
             if (removeUs == null)
             {
@@ -690,7 +599,7 @@ namespace DataAccess
 
         public string RemoveAlbum(int albumId)
         {
-            Albums removeMe = GetAlbumById(albumId);
+            Albums removeMe = _db.Albums.Where(al => al.AlId == albumId).FirstOrDefault();
 
             if (removeMe == null)
             {
@@ -723,7 +632,7 @@ namespace DataAccess
 
         public string RemoveUser(int userId)
         {
-            Users removeMe = GetUserById(userId);
+            Users removeMe = _db.Users.Where(u => u.UId == userId).FirstOrDefault();
 
             if (removeMe == null)
             {
@@ -756,7 +665,7 @@ namespace DataAccess
 
         public string RemoveSong(int songId)
         {
-            Songs removeMe = GetSongById(songId);
+            Songs removeMe = _db.Songs.Where(s => s.SId == songId).FirstOrDefault();
 
             if (removeMe == null)
             {
@@ -811,8 +720,8 @@ namespace DataAccess
 
         public string RemoveSongFromCovers(int songId)
         {
-            IEnumerable<Covers> checkCovers = GetCoversByOriginal(songId);
-            Covers checkOriginal = GetOriginalByCover(songId);
+            IEnumerable<Covers> checkCovers = _db.Covers.Where(c => c.CCover == songId).ToList();
+            IEnumerable<Covers> checkOriginal = _db.Covers.Where(c => c.COriginal == songId).ToList();
 
             if (checkCovers == null && checkOriginal == null)
             {
@@ -822,7 +731,7 @@ namespace DataAccess
             try
             {
                 _db.Covers.RemoveRange(checkCovers);
-                _db.Covers.Remove(checkOriginal);
+                _db.Covers.RemoveRange(checkOriginal);
                 _db.SaveChanges();
             }
             catch (Exception)
@@ -835,7 +744,7 @@ namespace DataAccess
 
         public string RemoveFavoritesBySong(int songId)
         {
-            IEnumerable<Favorites> removeUs = GetFavoritesBySong(songId);
+            IEnumerable<Favorites> removeUs = _db.Favorites.Where(s => s.FSong == songId).ToList();
 
             if (removeUs == null)
             {
@@ -857,7 +766,7 @@ namespace DataAccess
 
         public string RemoveFavoritesByUser(int userId)
         {
-            IEnumerable<Favorites> removeUs = GetFavoritesByUser(userId);
+            IEnumerable<Favorites> removeUs = _db.Favorites.Where(u => u.FUser == userId).ToList();
 
             if (removeUs == null)
             {
@@ -879,14 +788,14 @@ namespace DataAccess
 
         public string RemoveArtist(int artistId)
         {
-            Artists removeMe = GetArtistById(artistId);
+            Artists removeMe = _db.Artists.Where(ar => ar.ArId == artistId).FirstOrDefault();
 
             if (removeMe == null)
             {
                 return "ERROR: Artist already does not exist.  Operation abandoned.";
             }
 
-            IEnumerable<Albums> artistsAlbums = GetAllAlbumsByArtist(artistId);
+            IEnumerable<Albums> artistsAlbums = _db.Albums.Where(ar => ar.AlArtist == artistId).ToList();
 
             foreach (var item in artistsAlbums)
             {
@@ -902,7 +811,7 @@ namespace DataAccess
                 }
             }
 
-            IEnumerable<Songs> songsWithNoAlbum = GetAllSongsByArtist(artistId);
+            IEnumerable<Songs> songsWithNoAlbum = _db.Songs.Where(ar => ar.SArtist == artistId).ToList();
 
             foreach (var item in songsWithNoAlbum)
             {
@@ -929,6 +838,28 @@ namespace DataAccess
             }
 
             return "true";
-        }      
+        }
+
+        public string RemoveRequest(int requestId)
+        {
+            PendingRequests removeMe = _db.PendingRequests.Where(r => r.PrId == requestId).FirstOrDefault();
+
+            if (removeMe == null)
+            {
+                return "ERROR: Request already does not exist.  Operation abandoned.";
+            }
+
+            try
+            {
+                _db.PendingRequests.Remove(removeMe);
+                _db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be removed from favorites.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
     }
 }

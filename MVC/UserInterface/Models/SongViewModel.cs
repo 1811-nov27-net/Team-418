@@ -32,14 +32,14 @@ namespace UserInterface.Models
         public string Name { get; set; }
         public string Artist { get; set; }
         public string Album { get; set; }
-        public TimeSpan PlayTime { get; set; }
+        public TimeSpan? PlayTime { get; set; }
         public string Link { get; set; }
         // genre
         // release
         // cover
         public string Genre { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public bool Cover { get; set; }
+        public DateTime? ReleaseDate { get; set; }
+        public bool? Cover { get; set; }
 
         public static int NextId
         {

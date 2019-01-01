@@ -12,10 +12,10 @@ namespace Library
         // Name of album
         public string Name { get; set; }
         // Id of Artist (foreign key reference)
-        public int Artist { get; set; }
+        public string Artist { get; set; }
         // Date of album release, set as
         // new DateTime(int year, int day, int month)
-        public DateTime Release { get; set; }
+        public DateTime? Release { get; set; }
         // Genre of album
         public string Genre { get; set; }
     }

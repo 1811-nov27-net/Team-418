@@ -366,6 +366,11 @@ namespace DataAccess
             return Mapper.Map(_db.Songs.Include(a => a.SArtistNavigation).AsNoTracking());
         }
 
+        public IEnumerable<Library.Artists> GetAllArtists()
+        {
+            return Mapper.Map(_db.Artists.AsNoTracking());
+        }
+
         public IEnumerable<Library.Song> GetAllSongsByArtist(int artistId)
         {
             try
@@ -520,7 +525,6 @@ namespace DataAccess
 
             return "true";
         }
-
 
 
         /* 

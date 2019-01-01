@@ -14,7 +14,7 @@ namespace Library
         // Name of the song
         public string Name { get; set; }
         // Name of Artist(s)
-        public int Artist { get; set; }
+        public string Artist { get; set; }
         // Genre of song
         public string Genre { get; set; }
         // Length/duration of the song

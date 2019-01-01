@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DataAccess;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,11 @@ namespace WebApplication
             // Authorization database set service
             //services.AddDbContext<IdentityDbContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("AuthorizationDB")));
+
+            services.AddScoped<IMusicRepo, MusicRepo>();
+
+            services.AddDbContext<_1811proj1_5Context>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("MusicDB")));
 
 
             services

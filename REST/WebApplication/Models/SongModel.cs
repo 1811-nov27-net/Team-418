@@ -9,7 +9,7 @@ namespace WebApplication.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Artist { get; set; }
+        public string Artist { get; set; }
         public string Album { get; set; }
         public TimeSpan? PlayTime { get; set; }
         public string Link { get; set; }

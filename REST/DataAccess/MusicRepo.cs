@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess
 {
@@ -14,7 +15,7 @@ namespace DataAccess
         public MusicRepo(_1811proj1_5Context db)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
-        }      
+        }
 
         /* 
           * ---------------------------------------------------
@@ -22,31 +23,8 @@ namespace DataAccess
           * ---------------------------------------------------
          */
 
-        // Add a new artist to the database
-        public string AddArtist(Library.Artists artist)
-        {
-            if (GetArtistByName(artist.Name) != null)
-            {
-                return "ERROR: Artist already exists in the database.  Operation abandoned.";
-            }
-
-            Artists newArtist = Mapper.Map(artist);
-
-            try
-            {
-                _db.Artists.Add(newArtist);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: Artist could not be added to the database.  Operation abandoned.  Please contact your system administrator";
-            }
-            
-            return "true";
-        }
-
         // Add a new album to the database
-        public string AddAlbum(Library.Albums album)
+        public async Task<string> AddAlbum(Library.Albums album)
         {
 
             if (GetAlbumByNameAndArtist(album.Name, GetArtistByName(album.Artist).Id) != null)
@@ -60,8 +38,8 @@ namespace DataAccess
 
             try
             {
-                _db.Albums.Add(newAlbum);
-                _db.SaveChanges();
+                await _db.Albums.AddAsync(newAlbum);
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -71,94 +49,30 @@ namespace DataAccess
             return "true";
         }
 
-        // Add song to database
-        public string AddSong(Library.Song song)
+        // Add a new artist to the database
+        public async Task<string> AddArtist(Library.Artists artist)
         {
-            if (GetSongByNameAndArtist(song.Name, GetArtistByName(song.Artist).Id) != null)
+            if (GetArtistByName(artist.Name) != null)
             {
-                return "ERROR: Song already exists in the database.  Operation abandoned.";
+                return "ERROR: Artist already exists in the database.  Operation abandoned.";
             }
 
-            Songs newSong = Mapper.Map(song);
-
-            newSong.SArtist = GetArtistByName(song.Artist).Id;
+            Artists newArtist = Mapper.Map(artist);
 
             try
             {
-                _db.Songs.Add(newSong);
-                _db.SaveChanges();
+                await _db.Artists.AddAsync(newArtist);
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
-                return "CRITICAL ERROR: Song could not be added to the database.  Operation abandoned.  Please contact your system administrator";
+                return "CRITICAL ERROR: Artist could not be added to the database.  Operation abandoned.  Please contact your system administrator";
             }
-
+            
             return "true";
         }
 
-        public string AddSongToAlbum(int songId, int albumId)
-        {
-            if (GetSongFromAlbum(songId, albumId) != null)
-            {
-                return "ERROR: Song already exists on this album.  Operation abandoned.";
-            }
-
-            if (GetSongById(songId) == null)
-            {
-                return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
-            }
-
-            if (GetAlbumById(albumId) == null)
-            {
-                return "ERROR: No album exists in the database with the given ID.  Operation abandoned.";
-            }
-
-            AlbumSongs songToAlbum = new AlbumSongs
-            {
-                AsSong = songId,
-                AsAlbum = albumId
-            };
-
-            _db.AlbumSongs.Add(songToAlbum);
-            _db.SaveChanges();
-
-            // Return true so whatever calls this method can attempt to parse a boolean
-            // If boolean can't be parsed, then an error was returned that can be shown to the user
-            return "true";
-        }
-
-        public string AddUserFavorite(int userId, int songId)
-        {
-            if (_db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking() != null)
-            {
-                return "ERROR: User already has selected song listed as a favorite.  Operation abandoned.";
-            }
-
-            if (GetSongById(songId) == null)
-            {
-                return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
-            }
-
-            if (GetUserById(userId) == null)
-            {
-                return "ERROR: No user exists in the database with the given ID.  Operation abandoned.";
-            }
-
-            Favorites newFave = new Favorites
-            {
-                FSong = songId,
-                FUser = userId
-            };
-
-            _db.Favorites.Add(newFave);
-            _db.SaveChanges();
-
-            // Return true so whatever calls this method can attempt to parse a boolean
-            // If boolean can't be parsed, then an error was returned that can be shown to the user
-            return "true";
-        }
-
-        public string AddCover(int originalId, int coverId)
+        public async Task<string> AddCover(int originalId, int coverId)
         {
             if (_db.Covers.Where(o => o.COriginal == originalId).Where(c => c.CCover == coverId).AsNoTracking() != null)
             {
@@ -181,44 +95,29 @@ namespace DataAccess
                 CCover = coverId
             };
 
-            _db.Covers.Add(newCover);
-            _db.SaveChanges();
+            try
+            {
+                await _db.Covers.AddAsync(newCover);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be added to covers.  Operation abandoned.  Please contact your system administrator";
+            }
 
             // Return true so whatever calls this method can attempt to parse a boolean
             // If boolean can't be parsed, then an error was returned that can be shown to the user
             return "true";
         }
 
-        public string AddUser(Library.Users user)
-        {
-            if(_db.Users.Where(u => u.UName == user.Name).AsNoTracking().FirstOrDefault() != null)
-            {
-                return "ERROR: User already exists in the database.  Operation abandoned.";
-            }
-
-            Users newUser = Mapper.Map(user);
-
-            try
-            {
-                _db.Users.Add(newUser);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: User could not be added to the database.  Operation abandoned.  Please contact your system administrator";
-            }
-
-            return "true";
-        }
-
-        public string AddRequest(Library.PendingRequests request)
+        public async Task<string> AddRequestAsync(Library.PendingRequests request)
         {
             PendingRequests newRequest = Mapper.Map(request);
 
             try
             {
-                _db.PendingRequests.Add(newRequest);
-                _db.SaveChanges();
+                await _db.PendingRequests.AddAsync(newRequest);
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -228,82 +127,142 @@ namespace DataAccess
             return "true";
         }
 
+        // Add song to database
+        public async Task<string> AddSong(Library.Song song)
+        {
+            if (GetSongByNameAndArtist(song.Name, GetArtistByName(song.Artist).Id) != null)
+            {
+                return "ERROR: Song already exists in the database.  Operation abandoned.";
+            }
+
+            Songs newSong = Mapper.Map(song);
+
+            newSong.SArtist = GetArtistByName(song.Artist).Id;
+
+            try
+            {
+                await _db.Songs.AddAsync(newSong);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be added to the database.  Operation abandoned.  Please contact your system administrator";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> AddSongToAlbum(int songId, int albumId)
+        {
+            if (GetSongFromAlbum(songId, albumId) != null)
+            {
+                return "ERROR: Song already exists on this album.  Operation abandoned.";
+            }
+
+            if (GetSongById(songId) == null)
+            {
+                return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
+            }
+
+            if (GetAlbumById(albumId) == null)
+            {
+                return "ERROR: No album exists in the database with the given ID.  Operation abandoned.";
+            }
+
+            AlbumSongs songToAlbum = new AlbumSongs
+            {
+                AsSong = songId,
+                AsAlbum = albumId
+            };
+
+            try
+            {
+                await _db.AlbumSongs.AddAsync(songToAlbum);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be added to the album.  Operation abandoned.  Please contact your system administrator";
+            }
+            
+
+            // Return true so whatever calls this method can attempt to parse a boolean
+            // If boolean can't be parsed, then an error was returned that can be shown to the user
+            return "true";
+        }
+
+        public async Task<string> AddUser(Library.Users user)
+        {
+            if (_db.Users.Where(u => u.UName == user.Name).AsNoTracking().FirstOrDefault() != null)
+            {
+                return "ERROR: User already exists in the database.  Operation abandoned.";
+            }
+
+            Users newUser = Mapper.Map(user);
+
+            try
+            {
+                await _db.Users.AddAsync(newUser);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: User could not be added to the database.  Operation abandoned.  Please contact your system administrator";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> AddUserFavorite(int userId, int songId)
+        {
+            if (_db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking() != null)
+            {
+                return "ERROR: User already has selected song listed as a favorite.  Operation abandoned.";
+            }
+
+            if (GetSongById(songId) == null)
+            {
+                return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
+            }
+
+            if (GetUserById(userId) == null)
+            {
+                return "ERROR: No user exists in the database with the given ID.  Operation abandoned.";
+            }
+
+            Favorites newFave = new Favorites
+            {
+                FSong = songId,
+                FUser = userId
+            };
+
+            try
+            {
+                await _db.Favorites.AddAsync(newFave);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be added to user's favorites.  Operation abandoned.  Please contact your system administrator";
+            }
+
+            // Return true so whatever calls this method can attempt to parse a boolean
+            // If boolean can't be parsed, then an error was returned that can be shown to the user
+            return "true";
+        }
+
         /* 
          * ---------------------------------------------------
          * ---------| READ - GET INFO FROM DATABASE |---------
          * ---------------------------------------------------
         */
 
-        public Library.AlbumSongs GetSongFromAlbum(int songId, int albumId)
+        public async Task<Library.Albums> GetAlbumById(int id)
         {
             try
             {
-                return Mapper.Map(_db.AlbumSongs.Where(s => s.AsSong ==  songId).Where(al => al.AsAlbum == albumId).AsNoTracking().FirstOrDefault());
-            }
-            catch (ArgumentNullException)
-            {
-
-                return null;
-            }
-        }
-
-        public Library.Artists GetArtistByName(string name)
-        {
-            try
-            {
-                return Mapper.Map(_db.Artists.Where(a => a.ArName == name).AsNoTracking().FirstOrDefault());
-            }
-            catch (ArgumentNullException)
-            {
-
-                return null;
-            }
-        }
-
-        public Library.Artists GetArtistById(int id)
-        {
-            try
-            {
-                return Mapper.Map(_db.Artists.Where(a => a.ArId == id).AsNoTracking().FirstOrDefault());
-            }
-            catch (ArgumentNullException)
-            {
-
-                return null;
-            }
-        }
-
-        public Library.Albums GetAlbumByNameAndArtist(string name, int artistId)
-        {
-            try
-            {
-                return Mapper.Map(_db.Albums.Where(a => a.AlName == name).Where(ar => ar.AlArtist == artistId).AsNoTracking().FirstOrDefault());
-            }
-            catch (ArgumentNullException)
-            {
-
-                return null;
-            }
-        }
-
-        public IEnumerable<Library.Albums> GetAllAlbumsByArtist(int artistId)
-        {
-            try
-            {
-                return Mapper.Map(_db.Albums.Where(ar => ar.AlArtist == artistId).AsNoTracking().ToList());
-            }
-            catch (ArgumentNullException)
-            {
-
-                return null;
-            }
-        }
-
-        public Library.Albums GetAlbumById(int id)
-        {
-            try
-            {
-                return Mapper.Map(_db.Albums.Where(a => a.AlId == id).AsNoTracking().FirstOrDefault());
+                Albums awaitMe = await _db.Albums.Where(a => a.AlId == id).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
             {
@@ -311,36 +270,12 @@ namespace DataAccess
             }
         }
 
-        public Library.Song GetSongByNameAndArtist(string name, int artistId)
+        public async Task<Library.Albums> GetAlbumByNameAndArtist(string name, int artistId)
         {
             try
             {
-                return Mapper.Map(_db.Songs.Where(a => a.SName == name).Where(ar => ar.SArtist == artistId).AsNoTracking().FirstOrDefault());
-            }
-            catch (ArgumentNullException)
-            {
-
-                return null;
-            }
-        }
-
-        public Library.Song GetSongById(int id)
-        {
-            try
-            {
-                 return Mapper.Map(_db.Songs.Where(s => s.SId == id).AsNoTracking().FirstOrDefault());
-            }
-            catch (ArgumentNullException)
-            {
-                return null;
-            }          
-        }
-
-        public Library.Users GetUserById(int id)
-        {
-            try
-            {
-                return Mapper.Map(_db.Users.Where(u => u.UId == id).AsNoTracking().FirstOrDefault());
+                Albums awaitMe = await _db.Albums.Where(a => a.AlName == name).Where(ar => ar.AlArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
             {
@@ -348,11 +283,78 @@ namespace DataAccess
             }
         }
 
-        public Library.Users GetUserByName(string name)
+        public async Task<IEnumerable<Library.Albums>> GetAllAlbums()
         {
             try
             {
-                return Mapper.Map(_db.Users.Where(u => u.UName == name).AsNoTracking().FirstOrDefault());
+                IEnumerable<Albums> awaitUs = await _db.Albums.AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<Library.Albums>> GetAllAlbumsByArtist(int artistId)
+        {
+            try
+            {
+                IEnumerable<Albums> awaitUs = await _db.Albums.Where(ar => ar.AlArtist == artistId).AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<Library.Artists>> GetAllArtists()
+        {
+            try
+            {
+                IEnumerable<Artists> awaitUs = await _db.Artists.AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<Library.Covers>> GetAllCoversByOriginal(int originalId)
+        {
+            try
+            {
+                IEnumerable<Covers> awaitUs = await _db.Covers.Where(o => o.COriginal == originalId).AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<Library.Favorites>> GetAllFavoritesBySong(int songId)
+        {
+            try
+            {
+                IEnumerable<Favorites> awaitUs = await _db.Favorites.Where(u => u.FSong == songId).AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+       
+        // Get all favorites for a user based on User ID
+        public async Task<IEnumerable<Library.Favorites>> GetAllFavoritesByUser(int userId)
+        {
+            try
+            {
+                IEnumerable<Favorites> awaitUs = await _db.Favorites.Where(u => u.FUser == userId).AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
             {
@@ -361,21 +363,12 @@ namespace DataAccess
         }
 
         // Get all songs - users can search all songs to find new music
-        public IEnumerable<Library.Song> GetAllSongs()
-        {
-            return Mapper.Map(_db.Songs.Include(a => a.SArtistNavigation).AsNoTracking());
-        }
-
-        public IEnumerable<Library.Artists> GetAllArtists()
-        {
-            return Mapper.Map(_db.Artists.AsNoTracking());
-        }
-
-        public IEnumerable<Library.Song> GetAllSongsByArtist(int artistId)
+        public async Task<IEnumerable<Library.Song>> GetAllSongs()
         {
             try
             {
-                return Mapper.Map(_db.Songs.Where(ar => ar.SArtist == artistId).AsNoTracking().ToList());
+                IEnumerable<Songs> awaitUs = await _db.Songs.Include(a => a.SArtistNavigation).AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
             {
@@ -383,12 +376,12 @@ namespace DataAccess
             }
         }
 
-        // Get all favorites for a user based on User ID
-        public IEnumerable<Library.Favorites> GetFavoritesByUser(int userId)
+        public async Task<IEnumerable<Library.Song>> GetAllSongsByArtist(int artistId)
         {
             try
             {
-                return Mapper.Map(_db.Favorites.Where(u => u.FUser == userId).AsNoTracking().ToList());
+                IEnumerable<Songs> awaitUs = await _db.Songs.Where(ar => ar.SArtist == artistId).AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
             {
@@ -396,11 +389,12 @@ namespace DataAccess
             }
         }
 
-        public IEnumerable<Library.Favorites> GetFavoritesBySong(int songId)
+        public async Task<IEnumerable<Library.Users>> GetAllUsers()
         {
             try
             {
-                return Mapper.Map(_db.Favorites.Where(u => u.FSong == songId).AsNoTracking().ToList());
+                IEnumerable<Users> awaitUs = await _db.Users.AsNoTracking().ToListAsync();
+                return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
             {
@@ -408,11 +402,26 @@ namespace DataAccess
             }
         }
 
-        public IEnumerable<Library.Song> GetCoversByOriginal(int originalId)
+        public async Task<Library.Artists> GetArtistById(int id)
         {
             try
             {
-                return _db.Covers.Where(c => c.COriginal == originalId).AsNoTracking().Select(x => GetSongById(x.CCover)).ToList();
+                Artists awaitMe = await _db.Artists.Where(a => a.ArId == id).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+
+                return null;
+            }
+        }
+
+        public async Task<Library.Artists> GetArtistByName(string name)
+        {
+            try
+            {
+                Artists awaitMe = await _db.Artists.Where(a => a.ArName == name).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
             {
@@ -420,11 +429,77 @@ namespace DataAccess
             }
         }
 
-        public Library.Song GetOriginalByCover(int coverId)
+        public async Task<Library.Covers> GetOriginalByCover(int coverId)
         {
             try
             {
-                return _db.Covers.Where(c => c.CCover == coverId).AsNoTracking().Select(x => GetSongById(x.CCover)).FirstOrDefault();
+                Covers awaitMe = await _db.Covers.Where(c => c.COriginal == coverId).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Library.Song> GetSongById(int id)
+        {
+            try
+            {
+                Songs awaitMe = await _db.Songs.Where(s => s.SId == id).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Library.Song> GetSongByNameAndArtist(string name, int artistId)
+        {
+            try
+            {
+                Songs awaitMe = await _db.Songs.Where(a => a.SName == name).Where(ar => ar.SArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Library.AlbumSongs> GetSongFromAlbum(int songId, int albumId)
+        {
+            try
+            {
+                AlbumSongs awaitMe = await _db.AlbumSongs.Where(s => s.AsSong == songId).Where(al => al.AsAlbum == albumId).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Library.Users> GetUserById(int id)
+        {
+            try
+            {
+                Users awaitMe = await _db.Users.Where(u => u.UId == id).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Library.Users> GetUserByName(string name)
+        {
+            try
+            {
+                Users awaitMe = await _db.Users.Where(u => u.UName == name).AsNoTracking().FirstOrDefaultAsync();
+                return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
             {
@@ -438,31 +513,9 @@ namespace DataAccess
         * ------------------------------------------------------
        */
 
-        public string UpdateArtist(Library.Artists libArtist)
+        public async Task<string> UpdateAlbum(Library.Albums libAlbum)
         {
-            Artists updateMe = _db.Artists.Where(ar => ar.ArName == libArtist.Name).FirstOrDefault(); ;
-
-            if (updateMe == null)
-            {
-                return "ERROR: Artist could not be retrieved from database to update.  Operation abandoned.";
-            }      
-
-            try
-            {
-                _db.Artists.Update(Mapper.Map(libArtist));
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: Artist could not be updated.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            return "true";
-        }
-
-        public string UpdateAlbum(Library.Albums libAlbum)
-        {
-            Albums updateMe = _db.Albums.Where(al => al.AlName == libAlbum.Name).FirstOrDefault(); ;
+            Albums updateMe = await _db.Albums.Where(al => al.AlName == libAlbum.Name).FirstOrDefaultAsync();
 
             if (updateMe == null)
             {
@@ -472,7 +525,7 @@ namespace DataAccess
             try
             {
                 _db.Albums.Update(Mapper.Map(libAlbum));
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -482,9 +535,31 @@ namespace DataAccess
             return "true";
         }
 
-        public string UpdateSong(Library.Song libSong)
+        public async Task<string> UpdateArtist(Library.Artists libArtist)
         {
-            Songs updateMe = _db.Songs.Where(s => s.SName == libSong.Name).FirstOrDefault(); ;
+            Artists updateMe = await _db.Artists.Where(ar => ar.ArName == libArtist.Name).FirstOrDefaultAsync();
+
+            if (updateMe == null)
+            {
+                return "ERROR: Artist could not be retrieved from database to update.  Operation abandoned.";
+            }      
+
+            try
+            {
+                _db.Artists.Update(Mapper.Map(libArtist));
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Artist could not be updated.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> UpdateSong(Library.Song libSong)
+        {
+            Songs updateMe = await _db.Songs.Where(s => s.SName == libSong.Name).FirstOrDefaultAsync();
 
             if (updateMe == null)
             {
@@ -494,7 +569,7 @@ namespace DataAccess
             try
             {
                 _db.Songs.Update(Mapper.Map(libSong));
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -504,9 +579,9 @@ namespace DataAccess
             return "true";
         }
 
-        public string UpdateUser(Library.Users libUser)
+        public async Task<string> UpdateUser(Library.Users libUser)
         {
-            Users updateMe = _db.Users.Where(u => u.UName == libUser.Name).FirstOrDefault(); ;
+            Users updateMe = await _db.Users.Where(u => u.UName == libUser.Name).FirstOrDefaultAsync();
 
             if (updateMe == null)
             {
@@ -516,7 +591,7 @@ namespace DataAccess
             try
             {
                 _db.Users.Update(Mapper.Map(libUser));
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -526,91 +601,22 @@ namespace DataAccess
             return "true";
         }
 
-
         /* 
         * --------------------------------------------------------
         * ---------| DELETE - REMOVE INFO FROM DATABASE |---------
         * --------------------------------------------------------
        */
 
-        public string RemoveSongFromAlbum(int songId, int albumId)
+        public async Task<string> RemoveAlbum(int albumId)
         {
-            AlbumSongs removeMe = _db.AlbumSongs.Where(s => s.AsSong == songId).Where(al => al.AsAlbum == albumId).FirstOrDefault();
-
-            if (removeMe == null)
-            {
-                return "ERROR: Song to be removed does not exist on album.  Operation abandoned.";
-            }
-
-            try
-            {
-                _db.AlbumSongs.Remove(removeMe);
-                _db.SaveChanges();              
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: Song could not be removed from album.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            return "true";
-        }
-
-        public string RemoveSongFromAllAlbums(int songId)
-        {
-            IEnumerable<AlbumSongs> removeUs = _db.AlbumSongs.Where(al => al.AsSong == songId).ToList();
-
-            if (removeUs == null)
-            {
-                return "false";
-            }
-
-            try
-            {
-                _db.AlbumSongs.RemoveRange(removeUs);
-                _db.SaveChanges();
-
-                return "true";
-            }
-            catch (Exception)
-            {
-
-                return "CRITICAL ERROR: Song could not be removed from any albums.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-        
-        }
-
-        public string RemoveAllSongsFromAlbum(int albumId)
-        {
-            IEnumerable<AlbumSongs> removeUs = _db.AlbumSongs.Where(al => al.AsAlbum == albumId).ToList();
-
-            if (removeUs == null)
-            {
-                return "false";
-            }
-
-            try
-            {
-                _db.AlbumSongs.RemoveRange(removeUs);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: Songs could not be removed from album.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            return "true";
-        }
-
-        public string RemoveAlbum(int albumId)
-        {
-            Albums removeMe = _db.Albums.Where(al => al.AlId == albumId).FirstOrDefault();
+            Albums removeMe = await _db.Albums.Where(al => al.AlId == albumId).FirstOrDefaultAsync();
 
             if (removeMe == null)
             {
                 return "ERROR: Album already does not exist.  Operation abandoned.";
             }
 
-            string removeSongs = RemoveAllSongsFromAlbum(albumId);
+            string removeSongs = await RemoveAllSongsFromAlbum(albumId);
 
             try
             {
@@ -624,7 +630,7 @@ namespace DataAccess
             try
             {
                 _db.Albums.Remove(removeMe);
-                _db.SaveChanges();   
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -634,121 +640,9 @@ namespace DataAccess
             return "true";
         }
 
-        public string RemoveUser(int userId)
+        public async Task<string> RemoveAllSongsFromAlbum(int albumId)
         {
-            Users removeMe = _db.Users.Where(u => u.UId == userId).FirstOrDefault();
-
-            if (removeMe == null)
-            {
-                return "ERROR: User already does not exist.  Operation abandoned.";
-            }
-
-            string removeFavorites = RemoveFavoritesByUser(userId);
-
-            try
-            {
-                bool.Parse(removeFavorites);
-            }
-            catch (FormatException)
-            {
-                return removeFavorites;
-            }
-
-            try
-            {
-                _db.Users.Remove(removeMe);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: User could not be removed.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            return "true";
-        }
-
-        public string RemoveSong(int songId)
-        {
-            Songs removeMe = _db.Songs.Where(s => s.SId == songId).FirstOrDefault();
-
-            if (removeMe == null)
-            {
-                return "ERROR: Song already does not exist.  Operation abandoned.";
-            }
-
-            string removeFromAlbums = RemoveSongFromAllAlbums(songId);
-
-            try
-            {
-                bool.Parse(removeFromAlbums);
-            }
-            catch (FormatException)
-            {
-                return removeFromAlbums;
-            }
-
-            string removeFromCovers = RemoveSongFromCovers(songId);
-
-            try
-            {
-                bool.Parse(removeFromCovers);
-            }
-            catch (FormatException)
-            {
-                return removeFromCovers;
-            }
-
-            string removeFromFavorites = RemoveFavoritesBySong(songId);
-
-            try
-            {
-                bool.Parse(removeFromFavorites);
-            }
-            catch (FormatException)
-            {
-                return removeFromFavorites;
-            }
-
-            try
-            {
-                _db.Songs.Remove(removeMe);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: Song could not be removed.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            return "true";
-        }
-
-        public string RemoveSongFromCovers(int songId)
-        {
-            IEnumerable<Covers> checkCovers = _db.Covers.Where(c => c.CCover == songId).ToList();
-            IEnumerable<Covers> checkOriginal = _db.Covers.Where(c => c.COriginal == songId).ToList();
-
-            if (checkCovers == null && checkOriginal == null)
-            {
-                return "false";
-            }
-
-            try
-            {
-                _db.Covers.RemoveRange(checkCovers);
-                _db.Covers.RemoveRange(checkOriginal);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: Song could not be unlisted as a cover or original version.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            return "true";
-        }
-
-        public string RemoveFavoritesBySong(int songId)
-        {
-            IEnumerable<Favorites> removeUs = _db.Favorites.Where(s => s.FSong == songId).ToList();
+            IEnumerable<AlbumSongs> removeUs = await _db.AlbumSongs.Where(al => al.AsAlbum == albumId).ToListAsync();
 
             if (removeUs == null)
             {
@@ -757,53 +651,31 @@ namespace DataAccess
 
             try
             {
-                _db.Favorites.RemoveRange(removeUs);
-                _db.SaveChanges();
+                _db.AlbumSongs.RemoveRange(removeUs);
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
-                return "CRITICAL ERROR: Song could not be removed from favorites.  Operation abandoned.  Please contact your system administrator immediately.";
+                return "CRITICAL ERROR: Songs could not be removed from album.  Operation abandoned.  Please contact your system administrator immediately.";
             }
 
             return "true";
         }
 
-        public string RemoveFavoritesByUser(int userId)
+        public async Task<string> RemoveArtist(int artistId)
         {
-            IEnumerable<Favorites> removeUs = _db.Favorites.Where(u => u.FUser == userId).ToList();
-
-            if (removeUs == null)
-            {
-                return "false";
-            }
-
-            try
-            {
-                _db.Favorites.RemoveRange(removeUs);
-                _db.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: User could not be removed from favorites.  Operation abandoned.  Please contact your system administrator immediately.";
-            }
-
-            return "true";
-        }
-
-        public string RemoveArtist(int artistId)
-        {
-            Artists removeMe = _db.Artists.Where(ar => ar.ArId == artistId).FirstOrDefault();
+            Artists removeMe = await _db.Artists.Where(ar => ar.ArId == artistId).FirstOrDefaultAsync();
 
             if (removeMe == null)
             {
                 return "ERROR: Artist already does not exist.  Operation abandoned.";
             }
 
-            IEnumerable<Albums> artistsAlbums = _db.Albums.Where(ar => ar.AlArtist == artistId).ToList();
+            IEnumerable<Albums> artistsAlbums = await _db.Albums.Where(ar => ar.AlArtist == artistId).ToListAsync();
 
             foreach (var item in artistsAlbums)
             {
-                string removeAlbum = RemoveAlbum(item.AlId);
+                string removeAlbum = await RemoveAlbum(item.AlId);
 
                 try
                 {
@@ -815,11 +687,11 @@ namespace DataAccess
                 }
             }
 
-            IEnumerable<Songs> songsWithNoAlbum = _db.Songs.Where(ar => ar.SArtist == artistId).ToList();
+            IEnumerable<Songs> songsWithNoAlbum = await _db.Songs.Where(ar => ar.SArtist == artistId).ToListAsync();
 
             foreach (var item in songsWithNoAlbum)
             {
-                string removeSong = RemoveSong(item.SId);
+                string removeSong = await RemoveSong(item.SId);
 
                 try
                 {
@@ -834,7 +706,7 @@ namespace DataAccess
             try
             {
                 _db.Artists.Remove(removeMe);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -844,9 +716,53 @@ namespace DataAccess
             return "true";
         }
 
-        public string RemoveRequest(int requestId)
+        public async Task<string> RemoveFavoritesBySong(int songId)
         {
-            PendingRequests removeMe = _db.PendingRequests.Where(r => r.PrId == requestId).FirstOrDefault();
+            IEnumerable<Favorites> removeUs = await _db.Favorites.Where(s => s.FSong == songId).ToListAsync();
+
+            if (removeUs == null)
+            {
+                return "false";
+            }
+
+            try
+            {
+                _db.Favorites.RemoveRange(removeUs);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be removed from favorites.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> RemoveFavoritesByUser(int userId)
+        {
+            IEnumerable<Favorites> removeUs = await _db.Favorites.Where(u => u.FUser == userId).ToListAsync();
+
+            if (removeUs == null)
+            {
+                return "false";
+            }
+
+            try
+            {
+                _db.Favorites.RemoveRange(removeUs);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: User could not be removed from favorites.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> RemoveRequest(int requestId)
+        {
+            PendingRequests removeMe = await _db.PendingRequests.Where(r => r.PrId == requestId).FirstOrDefaultAsync();
 
             if (removeMe == null)
             {
@@ -856,11 +772,169 @@ namespace DataAccess
             try
             {
                 _db.PendingRequests.Remove(removeMe);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
                 return "CRITICAL ERROR: Song could not be removed from favorites.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> RemoveSong(int songId)
+        {
+            Songs removeMe = await _db.Songs.Where(s => s.SId == songId).FirstOrDefaultAsync();
+
+            if (removeMe == null)
+            {
+                return "ERROR: Song already does not exist.  Operation abandoned.";
+            }
+
+            string removeFromAlbums = await RemoveSongFromAllAlbums(songId);
+
+            try
+            {
+                bool.Parse(removeFromAlbums);
+            }
+            catch (FormatException)
+            {
+                return removeFromAlbums;
+            }
+
+            string removeFromCovers = await RemoveSongFromCovers(songId);
+
+            try
+            {
+                bool.Parse(removeFromCovers);
+            }
+            catch (FormatException)
+            {
+                return removeFromCovers;
+            }
+
+            string removeFromFavorites = await RemoveFavoritesBySong(songId);
+
+            try
+            {
+                bool.Parse(removeFromFavorites);
+            }
+            catch (FormatException)
+            {
+                return removeFromFavorites;
+            }
+
+            try
+            {
+                _db.Songs.Remove(removeMe);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be removed.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> RemoveSongFromAlbum(int songId, int albumId)
+        {
+            AlbumSongs removeMe = await _db.AlbumSongs.Where(s => s.AsSong == songId).Where(al => al.AsAlbum == albumId).FirstOrDefaultAsync();
+
+            if (removeMe == null)
+            {
+                return "ERROR: Song to be removed does not exist on album.  Operation abandoned.";
+            }
+
+            try
+            {
+                _db.AlbumSongs.Remove(removeMe);
+                await _db.SaveChangesAsync(); 
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be removed from album.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> RemoveSongFromAllAlbums(int songId)
+        {
+            IEnumerable<AlbumSongs> removeUs = await _db.AlbumSongs.Where(al => al.AsSong == songId).ToListAsync();
+
+            if (removeUs == null)
+            {
+                return "false";
+            }
+
+            try
+            {
+                _db.AlbumSongs.RemoveRange(removeUs);
+                await _db.SaveChangesAsync();
+
+                return "true";
+            }
+            catch (Exception)
+            {
+
+                return "CRITICAL ERROR: Song could not be removed from any albums.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+        
+        }
+
+        public async Task<string> RemoveSongFromCovers(int songId)
+        {
+            IEnumerable<Covers> checkCovers = await _db.Covers.Where(c => c.CCover == songId).ToListAsync();
+            IEnumerable<Covers> checkOriginal = await _db.Covers.Where(c => c.COriginal == songId).ToListAsync();
+
+            if (checkCovers == null && checkOriginal == null)
+            {
+                return "false";
+            }
+
+            try
+            {
+                _db.Covers.RemoveRange(checkCovers);
+                _db.Covers.RemoveRange(checkOriginal);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be unlisted as a cover or original version.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> RemoveUser(int userId)
+        {
+            Users removeMe = await _db.Users.Where(u => u.UId == userId).FirstOrDefaultAsync();
+
+            if (removeMe == null)
+            {
+                return "ERROR: User already does not exist.  Operation abandoned.";
+            }
+
+            string removeFavorites = await RemoveFavoritesByUser(userId);
+
+            try
+            {
+                bool.Parse(removeFavorites);
+            }
+            catch (FormatException)
+            {
+                return removeFavorites;
+            }
+
+            try
+            {
+                _db.Users.Remove(removeMe);
+               await  _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: User could not be removed.  Operation abandoned.  Please contact your system administrator immediately.";
             }
 
             return "true";

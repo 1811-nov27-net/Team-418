@@ -44,5 +44,6 @@ namespace DataAccess
         string UpdateArtist(Library.Artists libArtist);
         string UpdateSong(Song libSong);
         string UpdateUser(Library.Users libUser);
+        IEnumerable<Library.Artists> GetAllArtists();
     }
 }

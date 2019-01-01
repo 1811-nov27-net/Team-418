@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DataAccess
 {
-    public class MusicRepo
+    public class MusicRepo : IMusicRepo
     {
         private readonly _1811proj1_5Context _db;
 

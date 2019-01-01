@@ -11,45 +11,39 @@ namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AlbumController : ControllerBase
+    public class UserController : ControllerBase
     {
         public IMusicRepo Repo { get; }
 
-        public AlbumController(IMusicRepo repo)
+        public UserController(IMusicRepo repo)
         {
             Repo = repo;
         }
 
-        public static List<AlbumModel> Data = new List<AlbumModel>
+        public static List<UserModel> Data = new List<UserModel>
         {
-            new AlbumModel
+            new UserModel
             {
                 Id = 1,
-                Name = "DummyTestAlbum",
-                Artist = "Dunno",
-                Release = new DateTime(2001, 2, 20),
-                Genre = "Country"
+                Name = "Jane Doe",
+                Admin = false
             },
-            new AlbumModel
+            new UserModel
             {
                 Id = 2,
-                Name = "DummyTestAlbum2",
-                Artist = "Dunno Jr.",
-                Release = new DateTime(2018, 9, 6),
-                Genre = "Country"
+                Name = "John Doe",
+                Admin = true
             }
         };
-        
-        // GET: api/Album
+
+        // GET: api/User
         [HttpGet]
-        public ActionResult<IEnumerable<AlbumModel>> Get()
+        public ActionResult<IEnumerable<UserModel>> Get()
         {
-            List<AlbumModel> dispAlbums = null;
-            // need a get all albums method in Repo
+            List<UserModel> dispUsers = null;
+            // need a get all users method in Repo
             try
             {
-                //dispAlbums = Repo.GetAllAlbumsByArtist
-
                 return Data;
             }
             catch (Exception ex)
@@ -58,21 +52,21 @@ namespace WebApplication.Controllers
                 return StatusCode(500, ex);
             }
         }
-        
-        // GET: api/Album/5
+
+        // GET: api/User/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST: api/Album
+        // POST: api/User
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT: api/Album/5
+        // PUT: api/User/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {

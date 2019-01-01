@@ -15,7 +15,7 @@ namespace UserInterface.Controllers
         // This name should match the name of the cookie that 
         //  the REST service sets when a user logs in
         public static readonly string cookieName = "UserAuthentication";
-        private static readonly Uri serviceUri = new Uri("https://localhost:44376/");
+        private static readonly Uri serviceUri = new Uri("https://project1-5rest.azurewebsites.net");
 
         public HttpClient Client { get; set; }
 

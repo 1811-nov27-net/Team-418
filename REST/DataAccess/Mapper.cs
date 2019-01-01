@@ -183,5 +183,23 @@ namespace DataAccess
 
         public static IEnumerable<Library.Users> Map(IEnumerable<Users> users) => users.Select(Map);
         public static IEnumerable<Users> Map(IEnumerable<Library.Users> users) => users.Select(Map);
+
+        // COVER MAPS --------------------------------------------------------------
+        public static Library.Covers Map(Covers cover) => new Library.Covers
+        {
+            Id = cover.CId,
+            CoverId = cover.CCover,
+            OriginalID = cover.COriginal
+        };
+
+        public static Covers Map(Library.Covers cover) => new Covers
+        {
+            CId = cover.Id,
+            CCover = cover.CoverId,
+            COriginal = cover.OriginalID 
+        };
+
+        public static IEnumerable<Library.Covers> Map(IEnumerable<Covers> covers) => covers.Select(Map);
+        public static IEnumerable<Covers> Map(IEnumerable<Library.Covers> covers) => covers.Select(Map);
     }
 }

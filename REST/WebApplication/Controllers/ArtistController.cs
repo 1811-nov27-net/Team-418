@@ -19,8 +19,7 @@ namespace WebApplication.Controllers
         {
             Repo = repo;
         }
-        /*
-        // do we have a get all artist function?
+        
         // GET: api/Artist
         [HttpGet]
         public ActionResult<IEnumerable<ArtistModel>> Get()
@@ -29,17 +28,29 @@ namespace WebApplication.Controllers
 
             try
             {
-                dispArtists = Repo.Get
+                dispArtists = Repo.GetAllArtists().Select(x => new ArtistModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    City = x.City,
+                    Stateprovice = x.Stateprovince,
+                    Country = x.Country,
+                    Formed = x.Formed,
+                    LatestRelease = x.LatestRelease,
+                    Website = x.Website
+                }).ToList();
             }
             catch (Exception ex)
             {
 
-                throw;
+                return StatusCode(500, ex);
             }
+
+            return dispArtists;
         }
-        */
+        
         // GET: api/Artist/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";

@@ -19,16 +19,46 @@ namespace WebApplication.Controllers
         {
             Repo = repo;
         }
-        /*
+
+        public static List<AlbumModel> Data = new List<AlbumModel>
+        {
+            new AlbumModel
+            {
+                Id = 1,
+                Name = "DummyTestAlbum",
+                Artist = "Dunno",
+                Release = new DateTime(2001, 2, 20),
+                Genre = "Country"
+            },
+            new AlbumModel
+            {
+                Id = 2,
+                Name = "DummyTestAlbum2",
+                Artist = "Dunno Jr.",
+                Release = new DateTime(2018, 9, 6),
+                Genre = "Country"
+            }
+        };
+        
         // GET: api/Album
         [HttpGet]
         public ActionResult<IEnumerable<AlbumModel>> Get()
         {
-            
+            List<AlbumModel> dispAlbums = null;
+
+            try
+            {
+                return Data;
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex);
+            }
         }
-        */
+        
         // GET: api/Album/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";

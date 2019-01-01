@@ -1,0 +1,28 @@
+﻿@model IEnumerable<UserInterface.Models.ArtistViewModel>
+
+@{
+    ViewData["Title"] = "ArtistIndex";
+}
+
+<body>
+    <div class="container row" style="font-size: 15px; margin:200px 7px 2px 100px">
+
+        @foreach (var item in Model)
+        {
+            <div class="col-2 card-click card bg-light shadow-sm rounded border" style="margin:20px 20px 20px 20px">
+                <div class="card-body">
+                    <a id="main-card-button" class="card-text text-black-50 font-weight-bold d-flex justify-content-center"
+                       asp-area="" asp-action="ArtistView" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                    <br/>
+                    <i class="fas fa-headphones fa-lg text-black-50 card-text d-flex justify-content-center"></i>
+                </div>
+            </div>
+        }
+    </div>
+
+    <script src="~/js/AlbumCards.js"></script>
+
+</body>
+

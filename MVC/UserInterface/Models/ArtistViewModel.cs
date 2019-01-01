@@ -7,17 +7,38 @@ namespace UserInterface.Models
 {
     public class ArtistViewModel
     {
-        // Artist
-        // name
-        // city
-        // date formed
-        // date of latest release
-        // website
+        public static List<ArtistViewModel> Artists = new List<ArtistViewModel>();
+
         public string Name { get; set; }
         public List<AlbumViewModel> Albums { get; set; }
         public DateTime DateFormed { get; set; }
         public DateTime LatestReleaseDate { get; set; }
         public string Website { get; set; }
+
+        public int Id { get; set; }
+
+        public static int NextId
+        {
+            get
+            {
+                int highestId = 0;
+                if (Artists.Count > 0)
+                    highestId = Artists.Max(s => s.Id);
+
+                return highestId + 1;
+            }
+        }
+        public static ArtistViewModel GetById(int id)
+        {
+            return Artists.FirstOrDefault(a => a.Id == id);
+        }
+
+        public ArtistViewModel()
+        {
+            Id = NextId;
+            Albums = new List<AlbumViewModel>();
+            Artists.Add(this);
+        }
 
         public List<SongViewModel> Songs
         {
@@ -32,10 +53,6 @@ namespace UserInterface.Models
             }
         }
 
-        public ArtistViewModel()
-        {
-            Albums = new List<AlbumViewModel>();
-        }
 
     }
 }

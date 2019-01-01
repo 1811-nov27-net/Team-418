@@ -14,7 +14,7 @@ function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '200',
         width: '355',
-        videoId: 'M7lc1UVf-VE',
+        //videoId: 'M7lc1UVf-VE',
         events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
@@ -25,7 +25,7 @@ function onYouTubeIframeAPIReady() {
 
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
-    event.target.playVideo();
+    playVideo();
 }
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.ENDED) {
@@ -41,12 +41,15 @@ function onPlayerEnd() {
 
 function stopVideo() {
     player.stopVideo();
+    SetButtonPlay();
 }
 function pauseVideo() {
     player.pauseVideo();
+    SetButtonPlay();
 }
 function playVideo() {
     player.playVideo();
+    SetButtonPause();
 }
 
 function PlayToggleMain() {

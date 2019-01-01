@@ -1,34 +1,33 @@
-﻿@model IEnumerable<UserInterface.Models.SongViewModel>
+﻿@model UserInterface.Models.AlbumViewModel
 
 @{
-    ViewData["Title"] = "SongIndex";
+    ViewData["Title"] = "AlbumView";
 }
 <body>
     <div class="container col-12" style="font-size: 20px; margin:200px 7px 2px 100px">
-        @foreach (var item in Model)
+        <div class="container" style="margin-bottom:20px">
+            <div class="col-3">
+                <h3 class="text-black-50 font-weight-bold d-flex justify-content-center">@Model.Name</h3>
+                <i class="fas fa-headphones text-black-50 d-flex justify-content-center fa-xs"></i>
+                <a class="text-black-50 d-flex justify-content-center" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@Model.Artist.Id">
+                    @Html.DisplayFor(modelItem => Model.Artist.Name)
+                </a>
+            </div>
+        </div>
+        @foreach (var item in Model.Songs)
         {
             <div class="row">
                 <div class="col-1">
                     <i class="font-weight-bold text-black-50  float-right far fa-play-circle fa-s play-button"
                        data-youtubeid="@item.Link"></i>
                 </div>
-                <div class="col-5" style="padding-left:0px">
-                    <a class="text-black-50 float-left font-weight-bold" asp-action="SongDetails">
+                <div class="col-5 text-black-50 float-left font-weight-bold play-button"
+                       data-youtubeid="@item.Link">
                         @Html.DisplayFor(modelItem => item.Name)
-                    </a>
                 </div>
             </div>
             <div class="row">
                 <div class="col-8" style="padding-left:125px">
-                    <a class="text-black-50" asp-action="SongDetails">
-                        @Html.DisplayFor(modelItem => item.Artist)
-                    </a>
-
-                    <i class="text-black-50 fas fa-bolt fa-xs" style="padding-left:10px; padding-right:10px"></i>
-
-                    <a class="text-black-50" asp-action="SongDetails">
-                        @Html.DisplayFor(modelItem => item.Album)
-                    </a>
                 </div>
                 <div class="col-4">
                     <a class="text-black-50 float-right">
@@ -38,5 +37,5 @@
             </div>
         }
     </div>
-
 </body>
+

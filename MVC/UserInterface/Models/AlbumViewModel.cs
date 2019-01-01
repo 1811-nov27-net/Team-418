@@ -36,6 +36,10 @@ namespace UserInterface.Models
                 return highestId + 1;
             }
         }
+        public static AlbumViewModel GetById(int id)
+        {
+            return Albums.FirstOrDefault(a => a.Id == id);
+        }
 
 
     }

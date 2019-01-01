@@ -24,13 +24,9 @@ function onMouseOut() {
 
 
 function onClick() {
-
     let newEvent = new MouseEvent('click');
-    
     let button = event.target.querySelector("#main-card-button");
-
     button.dispatchEvent(newEvent);
-    console.log(button);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

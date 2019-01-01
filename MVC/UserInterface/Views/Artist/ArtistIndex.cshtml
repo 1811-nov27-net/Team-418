@@ -5,17 +5,17 @@
 }
 
 <body>
-    <div class="container row" style="font-size: 15px; margin:200px 7px 2px 100px">
+    <div class="container col-12 row d-flex justify-content-center">
 
         @foreach (var item in Model)
         {
-            <div class="col-2 card-click card bg-light shadow-sm rounded border" style="margin:20px 20px 20px 20px">
+            <div class="col-3 card-click card shadow-sm rounded border m-2">
                 <div class="card-body">
                     <a id="main-card-button" class="card-text text-black-50 font-weight-bold d-flex justify-content-center"
                        asp-area="" asp-action="ArtistView" asp-route-id="@item.Id">
                         @Html.DisplayFor(modelItem => item.Name)
                     </a>
-                    <br/>
+                    <br />
                     <i class="fas fa-headphones fa-lg text-black-50 card-text d-flex justify-content-center"></i>
                 </div>
             </div>

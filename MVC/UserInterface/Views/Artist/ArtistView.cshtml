@@ -5,13 +5,13 @@
 }
 
 <body>
-    <div class="container row" style="font-size: 15px; margin:200px 7px 2px 100px">
-        <div class="container row">
+    <div class="container col-12 row d-flex justify-content-center">
+        <div class="container row d-flex justify-content-center">
             <h3 class="text-black-50 font-weight-bold">@Model.Name</h3>
         </div>
         @foreach (var item in Model.Albums)
         {
-            <div class="col-2 card-click card bg-light shadow-sm rounded border" style="margin:20px 20px 20px 20px">
+            <div class="col-3 card-click card shadow-sm rounded border m-2">
                 <div class="card-body">
                     <a id="main-card-button" class="card-text text-black-50 font-weight-bold d-flex justify-content-center"
                        asp-area="" asp-controller="Album" asp-action="AlbumView" asp-route-id="@item.Id">

@@ -10,15 +10,20 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 // 3. This function creates an <iframe> (and YouTube player)
 //    after the API code downloads.
 var player;
+var set;
 function onYouTubeIframeAPIReady() {
+    if (set)
+        return;
+    set = true;
     player = new YT.Player('player', {
         height: '200',
-        width: '355',
+        width: '200',
         //videoId: 'M7lc1UVf-VE',
         events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
         }
+
 
     });
 }
@@ -124,13 +129,15 @@ function ToggleMiniButtonsOff(currentButton) {
 function PlayToggleMini(event) {
     let playButton = event.target;
 
+    
+
     if (player.videoId != playButton.dataset.youtubeid) {
         player.videoId = playButton.dataset.youtubeid;
         player.loadVideoById(playButton.dataset.youtubeid);
+        //ToggleMiniButtonsOff();
         PlayToggleMain();
         SetButtonPause()
-        ToggleMiniButtonsOff();
-        ToggleMiniButton(playButton);
+        SetMiniButtonPause(playButton);
         return;
     }
     

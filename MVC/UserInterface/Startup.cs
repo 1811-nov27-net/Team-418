@@ -26,64 +26,63 @@ namespace UserInterface
             //if(false)
             {
                 Random rand = new Random(DateTime.Now.TimeOfDay.Milliseconds);
-                if (SongViewModel.Songs.Count == 0)
+
+                ArtistViewModel twentyonepilots = new ArtistViewModel
                 {
-                    ArtistViewModel artist = new ArtistViewModel
-                    {
-                        Name = "Twenty One Pilots"
-                    };
-                    AlbumViewModel trench = new AlbumViewModel
-                    {
-                        Name = "Trench"
-                    };
-                    AlbumViewModel blurryface = new AlbumViewModel
-                    {
-                        Name = "Blurryface"
-                    };
-                    trench.Artist = artist;
-                    blurryface.Artist = artist;
-                    artist.Albums.Add(trench);
-                    artist.Albums.Add(blurryface);
+                    Name = "Twenty One Pilots"
+                };
+                AlbumViewModel trench = new AlbumViewModel
+                {
+                    Name = "Trench"
+                };
+                AlbumViewModel blurryface = new AlbumViewModel
+                {
+                    Name = "Blurryface"
+                };
+                trench.Artist = twentyonepilots.Name;
+                blurryface.Artist = twentyonepilots.Name;
+                twentyonepilots.Albums.Add(trench);
+                twentyonepilots.Albums.Add(blurryface);
 
-                    // Actual songs.
-                    SongViewModel song = new SongViewModel()
-                    {
-                        Album = trench,
-                        Artist = artist,
-                        Name = "Chlorine",
-                        PlayTime = new TimeSpan(0, 5, 24),
-                        Link = "Wc79sjzjNuo"
+                // Actual songs.
+                SongViewModel song = new SongViewModel()
+                {
+                    Album = trench.Name,
+                    Artist = twentyonepilots.Name,
+                    Name = "Chlorine",
+                    Length = new TimeSpan(0, 5, 24),
+                    Link = "Wc79sjzjNuo"
 
-                    };
-                    trench.Songs.Add(song);
-                    song = new SongViewModel()
-                    {
-                        Album = trench,
-                        Artist = artist,
-                        Name = "Pet Cheetah",
-                        PlayTime = new TimeSpan(0, 3, 18),
-                        Link = "VGMmSOsNAdc"
-                    };
-                    trench.Songs.Add(song);
-                    song = new SongViewModel()
-                    {
-                        Album = blurryface,
-                        Artist = artist,
-                        Name = "Ride",
-                        PlayTime = new TimeSpan(0, 3, 34),
-                        Link = "Pw-0pbY9JeU"
-                    };
-                    blurryface.Songs.Add(song);
-                    song = new SongViewModel()
-                    {
-                        Album = blurryface,
-                        Artist = artist,
-                        Name = "Polarize",
-                        PlayTime = new TimeSpan(0, 3, 46),
-                        Link = "MiPBQJq49xk"
-                    };
-                    blurryface.Songs.Add(song);
-                }
+                };
+                trench.Songs.Add(song);
+                song = new SongViewModel()
+                {
+                    Album = trench.Name,
+                    Artist = twentyonepilots.Name,
+                    Name = "Pet Cheetah",
+                    Length = new TimeSpan(0, 3, 18),
+                    Link = "VGMmSOsNAdc"
+                };
+                trench.Songs.Add(song);
+                song = new SongViewModel()
+                {
+                    Album = blurryface.Name,
+                    Artist = twentyonepilots.Name,
+                    Name = "Ride",
+                    Length = new TimeSpan(0, 3, 34),
+                    Link = "Pw-0pbY9JeU"
+                };
+                blurryface.Songs.Add(song);
+                song = new SongViewModel()
+                {
+                    Album = blurryface.Name,
+                    Artist = twentyonepilots.Name,
+                    Name = "Polarize",
+                    Length = new TimeSpan(0, 3, 46),
+                    Link = "MiPBQJq49xk"
+                };
+                blurryface.Songs.Add(song);
+
                 for (int i = 0; i < 10; ++i)
                 {
                     ArtistViewModel artist = new ArtistViewModel
@@ -105,17 +104,25 @@ namespace UserInterface
                         {
                             songs.Add(new SongViewModel
                             {
-                                Album = album,
-                                Artist = artist,
+                                Album = album.Name,
+                                Artist = artist.Name,
                                 Name = "Name " + (rand.Next() % 100).ToString(),
-                                PlayTime = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
+                                Length = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
                                 Link = "invalid link." + (rand.Next() % 100).ToString()
                             });
                         }
-                        album.Songs = songs;
+                        album.Artist = artist.Name;
                         artist.Albums.Add(album);
-                        album.Artist = artist;
                     }
+
+                    /*
+                    UserViewModel user = new UserViewModel
+                    {
+                        Name = "John",
+                        Favorites = twentyonepilots.Songs
+                    };
+                    UserViewModel.CurrentUser = user;
+                    */
                 }
             }
         }

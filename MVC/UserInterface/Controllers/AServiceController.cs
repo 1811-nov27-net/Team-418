@@ -32,7 +32,7 @@ namespace UserInterface.Controllers
 
             // Set object data in the request message if 
             //  there is anything to set
-            if(body != null)
+            if (body != null)
             {
                 var jsonString = JsonConvert.SerializeObject(body);
                 apiRequest.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
@@ -43,14 +43,29 @@ namespace UserInterface.Controllers
             //  already logged in.
             var cookieValue = Request.Cookies[cookieName];
 
-            if(cookieValue != null)
+            if (cookieValue != null)
             {
                 // Add the cookie to the header of the message
                 apiRequest.Headers.Add("Cookie", new CookieHeaderValue(cookieName, cookieValue).ToString());
             }
 
             return apiRequest;
-               
+
+        }
+
+        public static HttpRequestMessage CreateRequestToServiceNoCookie(HttpMethod restMethodName, string uri, object body = null)
+        {
+            var apiRequest = new HttpRequestMessage(restMethodName, new Uri(uri));
+
+            // Set object data in the request message if 
+            //  there is anything to set
+            if(body != null)
+            {
+                var jsonString = JsonConvert.SerializeObject(body);
+                apiRequest.Content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            }
+            
+            return apiRequest;
         }
 
     }

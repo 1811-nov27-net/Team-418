@@ -18,5 +18,7 @@ namespace UserInterface.Models
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long!")]
         [Display(Name = "Password", Prompt = "Enter Password", Description = "Password must consist of letters and numbers and be at least 6 characters long.")]
         public string Password { get; set; }
+
+        public bool Admin { get; set; }
     }
 }

@@ -22,8 +22,25 @@ namespace UserInterface.Controllers
             return View();
         }
 
+        // TODO: Replace with Login2 once I have REST services
         [HttpPost]
-        public async Task<ActionResult> Login(AccountViewModel formAccount)
+        public ActionResult Login(AccountViewModel accountForm)
+        {
+            UserViewModel user = UserViewModel.GetByName(accountForm.UserName);
+            if(user == null)
+            {
+                ModelState.AddModelError("Password", "Incorrect username or password");
+                return View();
+            }
+
+            UserViewModel.CurrentUser = user;
+
+            return RedirectToAction("Song", "SongIndex");
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Login2(AccountViewModel formAccount)
         {
             try
             {
@@ -31,6 +48,8 @@ namespace UserInterface.Controllers
                 {
                     return View();
                 }
+                // Get the user from the music database
+                HttpRequestMessage musicUserRequest = CreateRequestToService(HttpMethod.Post, "api/");
 
                 // Create the message to send to Account REST service
                 HttpRequestMessage request = CreateRequestToService(HttpMethod.Post, "api/Account/Login", formAccount);
@@ -98,8 +117,34 @@ namespace UserInterface.Controllers
         {
             return View();
         }
+
         [HttpPost]
-        public async Task<ActionResult> CreateNewAccount(AccountViewModel formAccount)
+        public ActionResult CreateNewAccount(AccountViewModel formAccount)
+        {
+            try
+            {
+                if(!ModelState.IsValid)
+                {
+                    return View();
+                }
+
+                UserViewModel user = new UserViewModel
+                {
+                    Name = formAccount.UserName,
+                    Admin = formAccount.Admin
+                };
+                UserViewModel.CurrentUser = user;
+
+                return RedirectToAction("SongIndex", "Song");
+            }
+            catch (Exception)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateNewAccount2(AccountViewModel formAccount)
         {
             try
             {

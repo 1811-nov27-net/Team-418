@@ -32,8 +32,8 @@ namespace WebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             // Authorization database set service
-            //services.AddDbContext<IdentityDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("AuthorizationDB")));
+            services.AddDbContext<IdentityDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("AuthorizationDB")));
 
             services.AddScoped<IMusicRepo, MusicRepo>();
 

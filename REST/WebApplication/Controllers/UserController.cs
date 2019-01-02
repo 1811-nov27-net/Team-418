@@ -44,26 +44,58 @@ namespace WebApplication.Controllers
             // need a get all users method in Repo
             try
             {
-                return Data;
+                dispUsers = Repo.GetAllUsers().Result.Select(x => new UserModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Admin = x.Admin
+                }).ToList();
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, ex);
             }
+
+            return dispUsers;
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<UserModel> Get(int id)
         {
-            return "value";
+            UserModel dispUser = null;
+            // need a get all users method in Repo
+            try
+            {
+                Library.Users getUser = Repo.GetUserById(id).Result;
+                dispUser = new UserModel
+                {
+                    Id = getUser.Id,
+                    Name = getUser.Name,
+                    Admin = getUser.Admin
+                };
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+
+            return dispUser;
         }
 
         // POST: api/User
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Library.Users value)
         {
+            try
+            {
+                Repo.AddUser(value);
+            }
+            catch (Exception)
+            {
+                Response.StatusCode = 500;
+            }
+
         }
 
         // PUT: api/User/5
@@ -76,6 +108,14 @@ namespace WebApplication.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            try
+            {
+                Repo.RemoveUser(id);
+            }
+            catch (Exception)
+            {
+                Response.StatusCode = 500;
+            }
         }
     }
 }

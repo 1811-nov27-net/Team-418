@@ -16,7 +16,6 @@ namespace DataAccess
             {
                 libLink = song.SLink.Substring(song.SLink.IndexOf("=") + 1);
             }
-
             return new Library.Song
             {
                 Id = song.SId,

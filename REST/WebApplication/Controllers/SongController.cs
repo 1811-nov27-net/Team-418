@@ -24,23 +24,31 @@ namespace WebApplication.Controllers
 
         // GET: api/Song
         [HttpGet]
-        public ActionResult<IEnumerable<SongModel>> Get()
+        public async Task<ActionResult<IEnumerable<SongModel>>> Get()
         {
-            List<SongModel> dispSongs = null;
+            List<SongModel> dispSongs = new List<SongModel>();
+
             try
             {
-                dispSongs = Repo.GetAllSongs().Result.Select(x => new SongModel
+                IEnumerable<Song> songs = await Repo.GetAllSongs();
+
+                foreach (Song song in songs)
                 {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Artist = x.Artist,
-                    Album = CheckAlbumName(x.Id),
-                    PlayTime = x.Length,
-                    Genre = x.Genre,
-                    Release = x.InitialRelease,
-                    Cover = x.Cover,
-                    Link = x.Link
-                }).ToList();
+                    SongModel songModel = new SongModel
+                    {
+                        Id = song.Id,
+                        Name = song.Name,
+                        Artist = song.Artist,
+                        PlayTime = song.Length,
+                        Genre = song.Genre,
+                        Release = song.InitialRelease,
+                        Cover = song.Cover,
+                        Link = song.Link
+                    };
+                    songModel.Album = await CheckAlbumName(song.Id);
+                    dispSongs.Add(songModel);
+                }
+                return dispSongs;
             }
             catch (Exception ex)
             {
@@ -48,14 +56,14 @@ namespace WebApplication.Controllers
                 return StatusCode(500, ex);
             }
 
-            return dispSongs;
         }
 
         // Checks if the song ID in question has an album name
         // attached to it
-        public string CheckAlbumName(int Id)
+        public async Task<string> CheckAlbumName(int Id)
         {
-            var albumName = Repo.GetAllAlbumsBySong(Id).Result.First().Name;
+            var albums = await Repo.GetAllAlbumsBySong(Id);
+            var albumName = albums.FirstOrDefault()?.Name;
             if (albumName == null)
                 albumName = "";
             return null;

@@ -50,7 +50,7 @@ namespace UserInterface
                     Album = trench.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Chlorine",
-                    Length = new TimeSpan(0, 5, 24),
+                    PlayTime = new TimeSpan(0, 5, 24),
                     Link = "Wc79sjzjNuo"
 
                 };
@@ -60,7 +60,7 @@ namespace UserInterface
                     Album = trench.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Pet Cheetah",
-                    Length = new TimeSpan(0, 3, 18),
+                    PlayTime = new TimeSpan(0, 3, 18),
                     Link = "VGMmSOsNAdc"
                 };
                 trench.Songs.Add(song);
@@ -69,7 +69,7 @@ namespace UserInterface
                     Album = blurryface.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Ride",
-                    Length = new TimeSpan(0, 3, 34),
+                    PlayTime = new TimeSpan(0, 3, 34),
                     Link = "Pw-0pbY9JeU"
                 };
                 blurryface.Songs.Add(song);
@@ -78,7 +78,7 @@ namespace UserInterface
                     Album = blurryface.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Polarize",
-                    Length = new TimeSpan(0, 3, 46),
+                    PlayTime = new TimeSpan(0, 3, 46),
                     Link = "MiPBQJq49xk"
                 };
                 blurryface.Songs.Add(song);
@@ -107,7 +107,7 @@ namespace UserInterface
                                 Album = album.Name,
                                 Artist = artist.Name,
                                 Name = "Name " + (rand.Next() % 100).ToString(),
-                                Length = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
+                                PlayTime = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
                                 Link = "invalid link." + (rand.Next() % 100).ToString()
                             });
                         }

@@ -110,7 +110,7 @@ namespace DataAccess
             return "true";
         }
 
-        public async Task<string> AddRequestAsync(Library.PendingRequests request)
+        public async Task<string> AddRequest(Library.PendingRequests request)
         {
             PendingRequests newRequest = Mapper.Map(request);
 
@@ -121,7 +121,7 @@ namespace DataAccess
             }
             catch (Exception)
             {
-                return "CRITICAL ERROR: Request could not be added to the database.  Operation abandoned.  Please contact your system administrator";
+                return "CRITICAL ERROR: Request could not be added to the database.  Operation abandoned.  Please contact your system administrator.";
             }
 
             return "true";
@@ -428,6 +428,26 @@ namespace DataAccess
                 return null;
             }
         }
+    
+        public async Task<IEnumerable<Library.PendingRequests>> GetAllRequests()
+        {
+            try
+            {
+                IEnumerable<PendingRequests> awaitUs = await _db.PendingRequests.AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
+                return Mapper.Map(awaitUs);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
 
         // Get all songs - users can search all songs to find new music
         public async Task<IEnumerable<Library.Song>> GetAllSongs()
@@ -531,6 +551,25 @@ namespace DataAccess
             try
             {
                 Covers awaitMe = await _db.Covers.Where(c => c.COriginal == coverId).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Library.PendingRequests> GetRequestById(int id)
+        {
+            try
+            {
+                PendingRequests awaitMe = await _db.PendingRequests.Where(r => r.PrId == id).AsNoTracking().FirstOrDefaultAsync();
 
                 if (awaitMe == null)
                 {

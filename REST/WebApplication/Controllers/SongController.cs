@@ -52,7 +52,6 @@ namespace WebApplication.Controllers
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, ex);
             }
 

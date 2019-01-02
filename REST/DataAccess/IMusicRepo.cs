@@ -10,7 +10,7 @@ namespace DataAccess
         Task<string> AddAlbum(Library.Albums album);
         Task<string> AddArtist(Library.Artists artist);
         Task<string> AddCover(int originalId, int coverId);
-        Task<string> AddRequestAsync(Library.PendingRequests request);
+        Task<string> AddRequest(Library.PendingRequests request);
         Task<string> AddSong(Song song);
         Task<string> AddSongToAlbum(int songId, int albumId);
         Task<string> AddUser(Library.Users user);
@@ -26,12 +26,14 @@ namespace DataAccess
         Task<IEnumerable<Library.Covers>> GetAllCoversByOriginal(int originalId);
         Task<IEnumerable<Library.Favorites>> GetAllFavoritesBySong(int songId);
         Task<IEnumerable<Library.Favorites>> GetAllFavoritesByUser(int userId);
+        Task<IEnumerable<Library.PendingRequests>> GetAllRequests();
         Task<IEnumerable<Song>> GetAllSongs();
         Task<IEnumerable<Song>> GetAllSongsByArtist(int artistId);
         Task<IEnumerable<Library.Users>> GetAllUsers();
         Task<Library.Artists> GetArtistById(int id);
         Task<Library.Artists> GetArtistByName(string name);
         Task<Library.Covers> GetOriginalByCover(int coverId);
+        Task<Library.PendingRequests> GetRequestById(int id);
         Task<Song> GetSongById(int id);
         Task<Song> GetSongByNameAndArtist(string name, int artistId);
         Task<Library.AlbumSongs> GetSongFromAlbum(int songId, int albumId);

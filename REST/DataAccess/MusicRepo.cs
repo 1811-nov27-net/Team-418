@@ -299,7 +299,7 @@ namespace DataAccess
         {
             try
             {
-                IEnumerable<Albums> awaitUs = await _db.Albums.AsNoTracking().ToListAsync();
+                IEnumerable<Albums> awaitUs = await _db.Albums.Include(ar => ar.AlArtistNavigation).AsNoTracking().ToListAsync();
 
                 if (awaitUs == null)
                 {

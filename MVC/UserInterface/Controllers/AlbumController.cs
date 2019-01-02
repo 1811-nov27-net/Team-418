@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using UserInterface.Models;
 
 namespace UserInterface.Controllers
@@ -13,6 +14,7 @@ namespace UserInterface.Controllers
         public AlbumController(HttpClient client) : base(client)
         {
         }
+
 
         // View of all albums
         [HttpGet]

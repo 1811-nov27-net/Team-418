@@ -47,7 +47,7 @@ namespace WebApplication.Controllers
         {
             try
             {
-                return Data;
+                return Data;    
             }
             catch (Exception ex)
             {

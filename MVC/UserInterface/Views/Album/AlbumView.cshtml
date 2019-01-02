@@ -9,8 +9,8 @@
             <div class="col-5">
                 <h3 class="text-black-50 font-weight-bold d-flex justify-content-center">@Model.Name</h3>
                 <i class="fas fa-headphones text-black-50 d-flex justify-content-center fa-xs"></i>
-                <a class="text-black-50 d-flex justify-content-center" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@Model.Artist.Id">
-                    @Html.DisplayFor(modelItem => Model.Artist.Name)
+                <a class="text-black-50 d-flex justify-content-center" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@Model.ArtistModel.Id">
+                    @Html.DisplayFor(modelItem => Model.Artist)
                 </a>
             </div>
         </div>
@@ -31,19 +31,19 @@
                     </div>
                     <div class="row">
                         <div class="col-6 d-flex justify-content-center">
-                            <a class="text-black-50" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.Artist.Id">
-                                @Html.DisplayFor(modelItem => item.Artist.Name)
+                            <a class="text-black-50" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.ArtistModel.Id">
+                                @Html.DisplayFor(modelItem => item.Artist)
                             </a>
 
                             <i class="text-black-50 fas fa-bolt fa-xs p-2"></i>
 
-                            <a class="text-black-50" asp-controller="Album" asp-action="SongDetails" asp-route-id="@item.Album.Id">
-                                @Html.DisplayFor(modelItem => item.Album.Name)
+                            <a class="text-black-50" asp-controller="Album" asp-action="SongDetails" asp-route-id="@item.AlbumModel.Id">
+                                @Html.DisplayFor(modelItem => item.Album)
                             </a>
                         </div>
                         <div class="col-6 pr-4">
                             <a class="text-black-50 d-flex justify-content-end">
-                                @Html.DisplayFor(modelItem => item.PlayTime)
+                                @Html.DisplayFor(modelItem => item.Length)
                             </a>
                         </div>
                     </div>

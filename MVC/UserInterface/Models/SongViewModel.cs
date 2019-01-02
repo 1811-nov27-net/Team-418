@@ -1,46 +1,33 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using UserInterface.Controllers;
 
 namespace UserInterface.Models
 {
     public class SongViewModel
     {
-        public enum SortMethod
+        #region Static Methods / Properties
+        private static List<SongViewModel> _songs = new List<SongViewModel>();
+        public static List<SongViewModel> Songs
         {
-            Name = 1,
-            Artist = 2,
-            Album = 4
+            get
+            {
+                return _songs;
+            }
+            set
+            {
+                _songs = value;
+            }
         }
-        // TODO: Update to sql db
-        // Storing local song db for now.
-        public static List<SongViewModel> Songs = new List<SongViewModel>();
-        // TODO: Implement bit field logic for funzies
-        public static int sortField;
-        public static bool NameSort, ArtistSort, AlbumSort;
-
-
-        public SongViewModel()
+        public static SongViewModel GetByName(string name)
         {
-            Id = NextId;
-            Songs.Add(this);
+            return Songs.FirstOrDefault(s => s.Name == name);
         }
-
-        #region Properties
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public ArtistViewModel Artist { get; set; }
-        public AlbumViewModel Album { get; set; }
-        public TimeSpan PlayTime { get; set; }
-        public string Link { get; set; }
-        // genre
-        // release
-        // cover
-        public string Genre { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public bool Cover { get; set; }
-
         public static int NextId
         {
             get
@@ -53,11 +40,60 @@ namespace UserInterface.Models
 
             }
         }
+        public static async void SyncSongsAsync(HttpClient client)
+        {
+            HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/song");
+            HttpResponseMessage response = await client.SendAsync(request);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                // Error. 
+                return;
+            }
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            Songs.Clear();
+            Songs = JsonConvert.DeserializeObject<List<SongViewModel>>(responseBody);
+
+            return;
+        }
         #endregion
 
-        #region Methods
+        #region Properties
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Artist { get; set; }
+        public string Album  { get; set; }
+        [DataType(DataType.Time)]
+        public TimeSpan Length { get; set; }
+        public string Link { get; set; }
+        public string Genre { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime InitialRelease { get; set; }
+        public bool Cover { get; set; }
+        public ArtistViewModel ArtistModel { get => ArtistViewModel.GetByName(Artist); }
+        public AlbumViewModel  AlbumModel  { get => AlbumViewModel.GetByName(Album); }
+        #endregion
 
+        #region Constructors
+        public SongViewModel()
+        {
+            Id = NextId;
+            _songs.Add(this);
+        }
+        #endregion
+
+        #region Sorting Stuff
+        public enum SortMethod
+        {
+            Name = 1,
+            Artist = 2,
+            Album = 4
+        }
+        // TODO: Implement bit field logic for funzies
+        public static int sortField;
+        public static bool NameSort, ArtistSort, AlbumSort;
         public static SongViewModel GetById(int id)
         {
             return Songs.FirstOrDefault(s => s.Id == id);
@@ -133,10 +169,6 @@ namespace UserInterface.Models
             //else
             //    SortSongs(sort, ascending: true);
         }
-
-
-
         #endregion
-
     }
 }

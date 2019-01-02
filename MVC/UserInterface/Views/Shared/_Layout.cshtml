@@ -45,17 +45,41 @@
                 <img src="~/img/teapot.jpg" height="200" width="200" />
             </a>
         </div>
-        <div class="col-3" style="margin-top:20px; margin-left:20px">
+        <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
             <i class="fas fa-search" style="padding-right:10px"></i>
-            <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Search</a>
+            <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Search</a>
         </div>
-        <div class="col-3" style="margin-top:20px; margin-left:20px">
+        <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
             <i class="fas fa-home" style="padding-right:10px"></i>
-            <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Home</a>
+            <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Home</a>
         </div>
-        <div class="col-3" style="margin-top:20px; margin-left:20px">
+        <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
             <i class="fas fa-user" style="padding-right:10px"></i>
-            <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">My Account</a>
+            @if (UserViewModel.CurrentUser == null)
+            {
+                <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+            }
+            else
+            {
+                @if (UserViewModel.CurrentUser.Admin)
+                {
+                    <i class="fas fa-crown" style="padding-right:10px"></i>
+                    <a class="dropdown-item font-weight-bold text-black-50">@UserViewModel.CurrentUser.Name</a>
+                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="User" asp-action="FavoritesView" asp-route-id="@UserViewModel.CurrentUser.Id">Favorites</a>
+                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="PendingSongIndex">Song Requests</a>
+                }
+                else
+                {
+                    <a class="dropdown-item font-weight-bold text-black-50">@UserViewModel.CurrentUser.Name</a>
+                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="User" asp-action="FavoritesView" asp-route-id="@UserViewModel.CurrentUser.Id">Favorites</a>
+                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                }
+            }
+        </div>
+        <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
+            <i class="fas fa-home" style="padding-right:10px"></i>
+            <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="RequestSong">Request Song</a>
         </div>
     </div>
 

@@ -1,37 +1,38 @@
 ﻿@model UserInterface.Models.AccountCreationViewModel
 
-@{
-    ViewData["Title"] = "CreateNewAccount";
+@{  
+    ViewData["Title"] = "Login";
 }
-
-<h1>Create New Account</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateNewAccount">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<body>
+    <div class="container card col-2 d-flex justify-content-center">
+        <h6 class="d-flex justify-content-center text-black-50 font-weight-bold m-3">Create Account</h6>
+        <form id="login-form" asp-controller="Account" asp-action="CreateNewAccount">
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <div asp-validation-summary="ModelOnly" class="form-invalid"></div>
+                <div class="form-group">
+                    <label asp-for="UserName" class="sr-only"></label>
+                    <input asp-for="UserName" class="form-control" placeholder="username" />
+                    <span asp-validation-for="UserName" class="form-invalid"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="sr-only"></label>
+                    <input asp-for="Password" class="form-control" placeholder="password" />
+                    <span asp-validation-for="Password" class="form-invalid"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="sr-only"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="confirm" />
+                    <span asp-validation-for="ConfirmPassword" class="form-invalid"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Admin" class="sr-only"></label>
+                    <input asp-for="Admin" class="form-control"/>
+                    <span asp-validation-for="Admin" class="form-invalid"></span>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <input type="submit" value="Create" class="btn btn-outline-secondary" />
+                </div>
             </div>
         </form>
     </div>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+</body>

@@ -38,7 +38,7 @@ namespace UserInterface.Controllers
                     Album = trench.Name,
                     Artist = artist.Name,
                     Name = "Chlorine",
-                    Length = new TimeSpan(0, 5, 24),
+                    PlayTime = new TimeSpan(0, 5, 24),
                     Link = "Wc79sjzjNuo"
 
                 };
@@ -48,7 +48,7 @@ namespace UserInterface.Controllers
                     Album = trench.Name,
                     Artist = artist.Name,
                     Name = "Pet Cheetah",
-                    Length = new TimeSpan(0, 3, 18),
+                    PlayTime = new TimeSpan(0, 3, 18),
                     Link = "VGMmSOsNAdc"
                 };
                 trench.Songs.Add(song);
@@ -57,7 +57,7 @@ namespace UserInterface.Controllers
                     Album = blurryface.Name,
                     Artist = artist.Name,
                     Name = "Ride",
-                    Length = new TimeSpan(0, 3, 34),
+                    PlayTime = new TimeSpan(0, 3, 34),
                     Link = "Pw-0pbY9JeU"
                 };
                 blurryface.Songs.Add(song);
@@ -66,7 +66,7 @@ namespace UserInterface.Controllers
                     Album = blurryface.Name,
                     Artist = artist.Name,
                     Name = "Polarize",
-                    Length = new TimeSpan(0, 3, 46),
+                    PlayTime = new TimeSpan(0, 3, 46),
                     Link = "MiPBQJq49xk"
                 };
                 blurryface.Songs.Add(song);
@@ -74,8 +74,10 @@ namespace UserInterface.Controllers
         }
 
         [HttpGet]
-        public ActionResult SongIndex()
+        public async Task<ActionResult> SongIndex()
         {
+            await SongViewModel.SyncSongsAsync(Client);
+
             return View(SongViewModel.Songs);
         }
         [HttpGet]

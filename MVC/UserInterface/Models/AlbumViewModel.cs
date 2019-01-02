@@ -31,7 +31,7 @@ namespace UserInterface.Models
         {
             return Albums.FirstOrDefault(a => a.Id == id);
         }
-        public static async void SyncAlbumsAsync(HttpClient client)
+        public static async Task SyncAlbumsAsync(HttpClient client)
         {
             HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/album");
             HttpResponseMessage response = await client.SendAsync(request);

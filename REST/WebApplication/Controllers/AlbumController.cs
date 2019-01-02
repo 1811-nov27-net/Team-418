@@ -44,19 +44,27 @@ namespace WebApplication.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<AlbumModel>> Get()
         {
-            List<AlbumModel> dispAlbums = null;
-            // need a get all albums method in Repo
+            List<AlbumModel> dispAlbum = null;
+
             try
             {
-                //dispAlbums = Repo.GetAllAlbumsByArtist
+                dispAlbum = Repo.GetAllAlbums().Result.Select(x => new AlbumModel
+                {
+                    Id = x.Id,
+                    Artist = x.Artist,
+                    Genre = x.Genre,
+                    Name = x.Name,
+                    Release = x.Release
+                }).ToList();
 
-                return Data;
+                return dispAlbum;
             }
             catch (Exception ex)
             {
 
                 return StatusCode(500, ex);
             }
+
         }
         
         // GET: api/Album/5

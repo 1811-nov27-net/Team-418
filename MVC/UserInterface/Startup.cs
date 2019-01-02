@@ -17,9 +17,20 @@ namespace UserInterface
 {
     public class Startup
     {
+        public void SyncFromDB()
+        {
+            HttpClient client = new HttpClient();
+            SongViewModel.SyncSongsAsync(client);
+            UserViewModel.SyncUsersAsync(client);
+            ArtistViewModel.SyncArtistAsync(client);
+            AlbumViewModel.SyncAlbumsAsync(client);
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            SyncFromDB();
 
             // Dummy Data
             if (AlbumViewModel.Albums.Count == 0)
@@ -50,7 +61,7 @@ namespace UserInterface
                     Album = trench.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Chlorine",
-                    Length = new TimeSpan(0, 5, 24),
+                    PlayTime = new TimeSpan(0, 5, 24),
                     Link = "Wc79sjzjNuo"
 
                 };
@@ -60,7 +71,7 @@ namespace UserInterface
                     Album = trench.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Pet Cheetah",
-                    Length = new TimeSpan(0, 3, 18),
+                    PlayTime = new TimeSpan(0, 3, 18),
                     Link = "VGMmSOsNAdc"
                 };
                 trench.Songs.Add(song);
@@ -69,7 +80,7 @@ namespace UserInterface
                     Album = blurryface.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Ride",
-                    Length = new TimeSpan(0, 3, 34),
+                    PlayTime = new TimeSpan(0, 3, 34),
                     Link = "Pw-0pbY9JeU"
                 };
                 blurryface.Songs.Add(song);
@@ -78,19 +89,19 @@ namespace UserInterface
                     Album = blurryface.Name,
                     Artist = twentyonepilots.Name,
                     Name = "Polarize",
-                    Length = new TimeSpan(0, 3, 46),
+                    PlayTime = new TimeSpan(0, 3, 46),
                     Link = "MiPBQJq49xk"
                 };
                 blurryface.Songs.Add(song);
 
-                for (int i = 0; i < 10; ++i)
+                for (int i = 0; i < 2; ++i)
                 {
                     ArtistViewModel artist = new ArtistViewModel
                     {
                         Name = "ArtistName " + (rand.Next() % 100).ToString(),
                     };
 
-                    for (int j = 0; j < 5; ++j)
+                    for (int j = 0; j < 2; ++j)
                     {
 
                         AlbumViewModel album = new AlbumViewModel
@@ -107,7 +118,7 @@ namespace UserInterface
                                 Album = album.Name,
                                 Artist = artist.Name,
                                 Name = "Name " + (rand.Next() % 100).ToString(),
-                                Length = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
+                                PlayTime = new TimeSpan(0, rand.Next() % 5, rand.Next() % 59),
                                 Link = "invalid link." + (rand.Next() % 100).ToString()
                             });
                         }
@@ -147,6 +158,7 @@ namespace UserInterface
                     options.Filters.Add(typeof(GetLoggedInUserFilter));
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -174,5 +186,6 @@ namespace UserInterface
                     template: "{controller=Song}/{action=SongIndex}/{id?}");
             });
         }
+        
     }
 }

@@ -40,7 +40,7 @@ namespace UserInterface.Models
 
             }
         }
-        public static async void SyncSongsAsync(HttpClient client)
+        public static async Task SyncSongsAsync(HttpClient client)
         {
             HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/song");
             HttpResponseMessage response = await client.SendAsync(request);
@@ -66,12 +66,12 @@ namespace UserInterface.Models
         public string Artist { get; set; }
         public string Album  { get; set; }
         [DataType(DataType.Time)]
-        public TimeSpan Length { get; set; }
+        public TimeSpan PlayTime { get; set; }
         public string Link { get; set; }
         public string Genre { get; set; }
         [DataType(DataType.Date)]
-        public DateTime InitialRelease { get; set; }
-        public bool Cover { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public bool? Cover { get; set; }
         public ArtistViewModel ArtistModel { get => ArtistViewModel.GetByName(Artist); }
         public AlbumViewModel  AlbumModel  { get => AlbumViewModel.GetByName(Album); }
         #endregion

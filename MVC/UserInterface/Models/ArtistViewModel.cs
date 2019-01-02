@@ -31,7 +31,7 @@ namespace UserInterface.Models
         {
             return Artists.FirstOrDefault(a => a.Id == id);
         }
-        public static async void SyncArtistAsync(HttpClient client)
+        public static async Task SyncArtistAsync(HttpClient client)
         {
             HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/artist");
             HttpResponseMessage response = await client.SendAsync(request);

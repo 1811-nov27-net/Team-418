@@ -128,7 +128,7 @@ function onPlayerStateChange(event) {
 
 //function PlayToggleMini(event) {
 //    let playButton = event.target;
-    
+
 //    if (player.videoId != playButton.dataset.youtubeid) {
 //        player.videoId = playButton.dataset.youtubeid;
 //        player.loadVideoById(playButton.dataset.youtubeid);
@@ -138,7 +138,7 @@ function onPlayerStateChange(event) {
 //        SetMiniButtonPause(playButton);
 //        return;
 //    }
-    
+
 //    ToggleMiniButton(playButton);
 //    PlayToggleMain();
 //}
@@ -161,10 +161,10 @@ function playVideo(youtubeid) {
 
     else {
         player.loadVideoById(youtubeid);
-        player.playVideo();   
+        player.playVideo();
     }
 }
-function pauseVideo(youtubeid){
+function pauseVideo(youtubeid) {
     if (player.getVideoData()['video_id'] == youtubeid) {
         player.pauseVideo();
     }

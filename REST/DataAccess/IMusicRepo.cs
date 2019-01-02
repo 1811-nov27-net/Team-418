@@ -21,6 +21,7 @@ namespace DataAccess
         Task<Library.Albums> GetAlbumByNameAndArtist(string name, int artistId);
         Task<IEnumerable<Library.Albums>> GetAllAlbums();
         Task<IEnumerable<Library.Albums>> GetAllAlbumsByArtist(int artistId);
+        Task<IEnumerable<Library.Albums>> GetAllAlbumsBySong(int songId);
         Task<IEnumerable<Library.Artists>> GetAllArtists();
         Task<IEnumerable<Library.Covers>> GetAllCoversByOriginal(int originalId);
         Task<IEnumerable<Library.Favorites>> GetAllFavoritesBySong(int songId);

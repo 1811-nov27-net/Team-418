@@ -39,8 +39,6 @@ namespace WebApplication
             //rather than a non-generic DbContextOptions parameter.</h2>
 
             // Authorization database set service
-            //services.AddDbContext<IdentityDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("AuthorizationDB")));
             
 
             services.AddScoped<IMusicRepo, MusicRepo>();
@@ -48,40 +46,42 @@ namespace WebApplication
             services.AddDbContext<_1811proj1_5Context>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MusicDB")));
 
+            services.AddDbContext<IdentityDbContext>(options =>
+              options.UseSqlServer(Configuration.GetConnectionString("AuthorizationDB")));
 
-            //services
-            //    .AddIdentity<IdentityUser, IdentityRole>(options =>
-            //    {
-            //        // Password settings (defaults - optional)
-            //        options.Password.RequireDigit = true;
-            //        options.Password.RequireLowercase = true;
-            //        options.Password.RequireNonAlphanumeric = false;
-            //        options.Password.RequireUppercase = false;
-            //        options.Password.RequiredLength = 6;
-            //        options.Password.RequiredUniqueChars = 1;
-                    
-            //    })
-            //    .AddEntityFrameworkStores<IdentityDbContext>();
+            services
+                .AddIdentity<IdentityUser, IdentityRole>(options =>
+                {
+                    // Password settings (defaults - optional)
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequiredUniqueChars = 1;
 
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.Cookie.Name = "UserAuthentication";
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-            //    options.Events = new CookieAuthenticationEvents
-            //    {
-            //        OnRedirectToLogin = ctx =>
-            //        {
-            //            ctx.Response.StatusCode = 401; // Unauthorized (really, unauthenticated)
-            //            return Task.FromResult(0);
-            //        },
-            //        OnRedirectToAccessDenied = ctx =>
-            //        {
-            //            ctx.Response.StatusCode = 403; // Forbidden (unauthorized, you're logged in, but you 
-            //                                           // don't have the right role
-            //            return Task.FromResult(0);
-            //        },
-            //    };
-            //});
+                })
+                .AddEntityFrameworkStores<IdentityDbContext>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "UserAuthentication";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = ctx =>
+                    {
+                        ctx.Response.StatusCode = 401; // Unauthorized (really, unauthenticated)
+                        return Task.FromResult(0);
+                    },
+                    OnRedirectToAccessDenied = ctx =>
+                    {
+                        ctx.Response.StatusCode = 403; // Forbidden (unauthorized, you're logged in, but you 
+                                                       // don't have the right role
+                        return Task.FromResult(0);
+                    },
+                };
+            });
 
             services.AddAuthentication();
 

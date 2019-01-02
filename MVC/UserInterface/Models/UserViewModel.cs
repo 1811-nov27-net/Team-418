@@ -88,6 +88,12 @@ namespace UserInterface.Models
 
             FavoriteSongs.Add(song.Name);
         }
+
+        public async Task SyncFavorites()
+        {
+            
+        }
+
         #endregion
     }
 }

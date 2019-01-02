@@ -26,15 +26,16 @@ namespace DataAccess
         // Add a new album to the database
         public async Task<string> AddAlbum(Library.Albums album)
         {
-
-            if (GetAlbumByNameAndArtist(album.Name, GetArtistByName(album.Artist).Id) != null)
+            Library.Artists artist = await GetArtistByName(album.Artist);
+            Library.Albums albumExistsCheck = await GetAlbumByNameAndArtist(album.Name, artist.Id);
+            if (albumExistsCheck != null)
             {
                 return "ERROR: Album already exists in the database.  Operation abandoned.";
             }
 
             Albums newAlbum = Mapper.Map(album);
 
-            newAlbum.AlArtist = GetArtistByName(album.Artist).Id;
+            newAlbum.AlArtist = artist.Id;
 
             try
             {
@@ -75,17 +76,17 @@ namespace DataAccess
 
         public async Task<string> AddCover(int originalId, int coverId)
         {
-            if (_db.Covers.Where(o => o.COriginal == originalId).Where(c => c.CCover == coverId).AsNoTracking() != null)
+            if (_db.Covers.Where(o => o.COriginal == originalId).Where(c => c.CCover == coverId).AsNoTracking().FirstOrDefaultAsync() != null)
             {
                 return "ERROR: There is already an entry in the database matching the cover version to the original.  Operation abandoned.";
             }
 
-            if (GetSongById(coverId) == null)
+            if (await GetSongById(coverId) == null)
             {
                 return "ERROR: No song exists in the database with the given ID for the cover version.  Operation abandoned.";
             }
 
-            if (GetSongById(originalId) == null)
+            if (await GetSongById(originalId) == null)
             {
                 return "ERROR: No song exists in the database with the given ID for the original version.  Operation abandoned.";
             }
@@ -113,17 +114,17 @@ namespace DataAccess
 
         public async Task<string> AddFavorite(int userId, int songId)
         {
-            if (_db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking() != null)
+            if (await _db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking().FirstOrDefaultAsync() != null)
             {
                 return "ERROR: User already has selected song listed as a favorite.  Operation abandoned.";
             }
 
-            if (GetSongById(songId) == null)
+            if (await GetSongById(songId) == null)
             {
                 return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
             }
 
-            if (GetUserById(userId) == null)
+            if (await GetUserById(userId) == null)
             {
                 return "ERROR: No user exists in the database with the given ID.  Operation abandoned.";
             }
@@ -196,17 +197,17 @@ namespace DataAccess
 
         public async Task<string> AddSongToAlbum(int songId, int albumId)
         {
-            if (GetSongFromAlbum(songId, albumId) != null)
+            if (await GetSongFromAlbum(songId, albumId) != null)
             {
                 return "ERROR: Song already exists on this album.  Operation abandoned.";
             }
 
-            if (GetSongById(songId) == null)
+            if (await GetSongById(songId) == null)
             {
                 return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
             }
 
-            if (GetAlbumById(albumId) == null)
+            if (await GetAlbumById(albumId) == null)
             {
                 return "ERROR: No album exists in the database with the given ID.  Operation abandoned.";
             }
@@ -235,7 +236,7 @@ namespace DataAccess
 
         public async Task<string> AddUser(Library.Users user)
         {
-            if (_db.Users.Where(u => u.UName == user.Name).AsNoTracking().FirstOrDefault() != null)
+            if (await _db.Users.Where(u => u.UName == user.Name).AsNoTracking().FirstOrDefaultAsync() != null)
             {
                 return "ERROR: User already exists in the database.  Operation abandoned.";
             }
@@ -343,7 +344,7 @@ namespace DataAccess
             {
                 IEnumerable<Albums> returnUs = await _db.Albums.Include(x => x.AlbumSongs).Include(ar => ar.AlArtistNavigation).Where(x => x.AlbumSongs.Any(y => y.AsSong == songId)).ToListAsync();
 
-                if (returnUs.Count() <= 0)
+                if (returnUs == null)
                 {
                     return null;
                 }
@@ -451,7 +452,6 @@ namespace DataAccess
                 return null;
             }
         }
-
 
         // Get all songs - users can search all songs to find new music
         public async Task<IEnumerable<Library.Song>> GetAllSongs()

@@ -153,7 +153,7 @@ function onPlayerStateChange(event) {
 //        playButtons[i].addEventListener("click", PlayToggleMini);
 //    }
 //});
-
+// testing
 function playVideo(youtubeid) {
     if (player.getVideoData()['video_id'] == youtubeid) {
         player.playVideo();

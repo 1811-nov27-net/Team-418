@@ -54,7 +54,7 @@ namespace WebApplication.Controllers
         }
 
         // GET: api/Request/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<RequestModel>> Get(int id)
         {
             try

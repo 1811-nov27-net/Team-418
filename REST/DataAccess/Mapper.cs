@@ -16,7 +16,8 @@ namespace DataAccess
             {
                 libLink = song.SLink.Substring(song.SLink.IndexOf("=") + 1);
             }
-            return new Library.Song
+
+            Library.Song returnMe = new Library.Song
             {
                 Id = song.SId,
                 Name = song.SName,
@@ -27,6 +28,8 @@ namespace DataAccess
                 Cover = song.SCover,
                 Link = libLink
             };
+
+            return returnMe;
         }
 
         public static Songs Map(Library.Song song)
@@ -38,7 +41,7 @@ namespace DataAccess
                 dbLink = "https://www.youtube.com/watch?v=" + song.Link;
             }
 
-            return new Songs
+            Songs returnMe = new Songs
             {
                 SName = song.Name,
                 // The repo will handle assigning the ID of the artist
@@ -49,6 +52,8 @@ namespace DataAccess
                 SCover = song.Cover,
                 SLink = dbLink
             };
+
+            return returnMe;
         }
 
         public static IEnumerable<Library.Song> Map(IEnumerable<Songs> songs) => songs.Select(Map);

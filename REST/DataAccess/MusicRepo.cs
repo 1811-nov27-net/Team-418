@@ -309,6 +309,19 @@ namespace DataAccess
             }
         }
 
+        public async Task<IEnumerable<Library.Albums>> GetAllAlbumsBySong(int songId)
+        {
+            try
+            {
+                IEnumerable<AlbumSongs> awaitJunction = await _db.AlbumSongs.Where(s => s.AsSong == songId).AsNoTracking().ToListAsync();
+                return awaitJunction.Select(x => GetAlbumById(x.AsAlbum).Result).ToList();
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
         public async Task<IEnumerable<Library.Artists>> GetAllArtists()
         {
             try

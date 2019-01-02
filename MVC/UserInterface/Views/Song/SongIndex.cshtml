@@ -26,15 +26,34 @@
                     </div>
                     <div class="row">
                         <div class="col-6 d-flex justify-content-center">
-                            <a class="text-black-50" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.ArtistModel.Id">
-                                @Html.DisplayFor(modelItem => item.Artist)
-                            </a>
+                            @if (item.ArtistModel != null)
+                            {
+                                <a class="text-black-50" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.ArtistModel.Id">
+                                    @Html.DisplayFor(modelItem => item.Artist)
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="text-black-50" asp-controller="Song" asp-action="SongIndex">
+                                    @Html.DisplayFor(modelItem => item.Artist)
+                                </a>
+                            }
 
                             <i class="text-black-50 fas fa-bolt fa-xs p-2"></i>
 
-                            <a class="text-black-50" asp-controller="Album" asp-action="AlbumView" asp-route-id="@item.AlbumModel.Id">
-                                @Html.DisplayFor(modelItem => item.Album)
-                            </a>
+                            @if (item.AlbumModel != null)
+                            {
+                                <a class="text-black-50" asp-controller="Album" asp-action="AlbumView" asp-route-id="@item.AlbumModel.Id">
+                                    @Html.DisplayFor(modelItem => item.Album)
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="text-black-50" asp-controller="Song" asp-action="SongIndex">
+                                    @Html.DisplayFor(modelItem => item.Album)
+                                </a>
+
+                            }
                         </div>
                         <div class="col-6 pr-4">
                             <a class="text-black-50 d-flex justify-content-end">

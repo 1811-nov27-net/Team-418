@@ -33,8 +33,8 @@ namespace UserInterface
             SyncFromDB();
 
             // Dummy Data
-            if (AlbumViewModel.Albums.Count == 0)
-            //if(false)
+            //if (AlbumViewModel.Albums.Count == 0)
+            if(false)
             {
                 Random rand = new Random(DateTime.Now.TimeOfDay.Milliseconds);
 

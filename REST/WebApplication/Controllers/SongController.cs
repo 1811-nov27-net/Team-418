@@ -35,7 +35,7 @@ namespace WebApplication.Controllers
                     Id = x.Id,
                     Name = x.Name,
                     Artist = x.Artist,
-                    //Album = Repo.GetAllAlbumsBySong(x.Id).Result.First().Name,
+                    Album = CheckAlbumName(x.Id),
                     PlayTime = x.Length,
                     Genre = x.Genre,
                     Release = x.InitialRelease,
@@ -52,6 +52,15 @@ namespace WebApplication.Controllers
             return dispSongs;
         }
 
+        public string CheckAlbumName(int Id)
+        {
+            var albumName = Repo.GetAllAlbumsBySong(Id).Result.First().Name;
+            if (albumName == null)
+                albumName = "";
+            return albumName;
+        }
+
+        // need to implement
         // GET: api/Song/5
         [HttpGet("{id}")]
         public string Get(int id)

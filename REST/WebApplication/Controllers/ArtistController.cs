@@ -28,7 +28,7 @@ namespace WebApplication.Controllers
 
             try
             {
-                dispArtists = Repo.GetAllArtists().Select(x => new ArtistModel
+                dispArtists = Repo.GetAllArtists().Result.Select(x => new ArtistModel
                 {
                     Id = x.Id,
                     Name = x.Name,

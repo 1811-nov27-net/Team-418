@@ -6,6 +6,7 @@ using DataAccess;
 using Library;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using WebApplication.Models;
 
 namespace WebApplication.Controllers
@@ -29,11 +30,12 @@ namespace WebApplication.Controllers
 
             try
             {
-                dispSongs = Repo.GetAllSongs().Select(x => new SongModel
+                dispSongs = Repo.GetAllSongs().Result.Select(x => new SongModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Artist = x.Artist,
+                    //Album = Repo.
                     PlayTime = x.Length,
                     Genre = x.Genre,
                     Release = x.InitialRelease,
@@ -59,8 +61,16 @@ namespace WebApplication.Controllers
 
         // POST: api/Song
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Song value)
         {
+            try
+            {
+                Repo.AddSong(value);
+            }
+            catch (Exception)
+            {
+                Response.StatusCode = 500;
+            }
         }
 
         // PUT: api/Song/5

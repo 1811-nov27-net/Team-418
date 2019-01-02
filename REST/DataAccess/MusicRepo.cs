@@ -27,12 +27,15 @@ namespace DataAccess
         public async Task<string> AddAlbum(Library.Albums album)
         {
             Library.Artists artist = await GetArtistByName(album.Artist);
-            Library.Albums albumExistsCheck = await GetAlbumByNameAndArtist(album.Name, artist.Id);
-            if (albumExistsCheck != null)
+            if (artist != null)
             {
-                return "ERROR: Album already exists in the database.  Operation abandoned.";
+                Library.Albums albumExistsCheck = await GetAlbumByNameAndArtist(album.Name, artist.Id);
+                if (albumExistsCheck != null)
+                {
+                    return "ERROR: Album already exists in the database.  Operation abandoned.";
+                }
             }
-
+            
             Albums newAlbum = Mapper.Map(album);
 
             newAlbum.AlArtist = artist.Id;
@@ -171,13 +174,16 @@ namespace DataAccess
         public async Task<string> AddSong(Library.Song song)
         {
             Library.Artists getArtist = await GetArtistByName(song.Artist);
-            Library.Song songExistsCheck = await GetSongByNameAndArtist(song.Name, getArtist.Id);
-
-            if (songExistsCheck != null)
+            if (getArtist != null)
             {
-                return "ERROR: Song already exists in the database.  Operation abandoned.";
-            }
+                Library.Song songExistsCheck = await GetSongByNameAndArtist(song.Name, getArtist.Id);
 
+                if (songExistsCheck != null)
+                {
+                    return "ERROR: Song already exists in the database.  Operation abandoned.";
+                }
+            }
+            
             Songs newSong = Mapper.Map(song);
 
             newSong.SArtist = getArtist.Id;

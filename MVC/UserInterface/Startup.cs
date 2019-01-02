@@ -17,10 +17,21 @@ namespace UserInterface
 {
     public class Startup
     {
+        public void SyncFromDB()
+        {
+            HttpClient client = new HttpClient();
+            SongViewModel.SyncSongsAsync(client);
+            UserViewModel.SyncUsersAsync(client);
+            ArtistViewModel.SyncArtistAsync(client);
+            AlbumViewModel.SyncAlbumsAsync(client);
+        }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
+
+            SyncFromDB();
+
             // Dummy Data
             if (AlbumViewModel.Albums.Count == 0)
             //if(false)
@@ -83,14 +94,14 @@ namespace UserInterface
                 };
                 blurryface.Songs.Add(song);
 
-                for (int i = 0; i < 10; ++i)
+                for (int i = 0; i < 2; ++i)
                 {
                     ArtistViewModel artist = new ArtistViewModel
                     {
                         Name = "ArtistName " + (rand.Next() % 100).ToString(),
                     };
 
-                    for (int j = 0; j < 5; ++j)
+                    for (int j = 0; j < 2; ++j)
                     {
 
                         AlbumViewModel album = new AlbumViewModel

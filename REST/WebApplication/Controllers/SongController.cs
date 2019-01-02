@@ -63,11 +63,12 @@ namespace WebApplication.Controllers
         public async Task<string> CheckAlbumName(int Id)
         {
             var albums = await Repo.GetAllAlbumsBySong(Id);
-            
             if (albums == null)
                 return "";
 
-            return albums.FirstOrDefault()?.Name; ;
+            var album = albums.FirstOrDefault();
+            
+            return album.Name;
         }
 
         // need to implement

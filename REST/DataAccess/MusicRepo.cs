@@ -52,7 +52,8 @@ namespace DataAccess
         // Add a new artist to the database
         public async Task<string> AddArtist(Library.Artists artist)
         {
-            if (GetArtistByName(artist.Name) != null)
+            Library.Artists artistExistsCheck = await GetArtistByName(artist.Name);
+            if (artistExistsCheck != null)
             {
                 return "ERROR: Artist already exists in the database.  Operation abandoned.";
             }

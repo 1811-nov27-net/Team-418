@@ -35,6 +35,7 @@ namespace WebApplication.Controllers
                     Id = x.Id,
                     Name = x.Name,
                     Artist = x.Artist,
+                    // need to merge
                     //Album = Repo.
                     PlayTime = x.Length,
                     Genre = x.Genre,

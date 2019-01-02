@@ -58,6 +58,7 @@ namespace WebApplication.Controllers
             var albumName = Repo.GetAllAlbumsBySong(Id).Result.First().Name;
             if (albumName == null)
                 albumName = "";
+            return null;
         }
 
         // need to implement

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DataAccess;
-using Library;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication.Models;
@@ -12,33 +11,33 @@ namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SongController : ControllerBase
+    public class ArtistController : ControllerBase
     {
         public IMusicRepo Repo { get; }
 
-        public SongController(IMusicRepo repo)
+        public ArtistController(IMusicRepo repo)
         {
             Repo = repo;
         }
-
-        // GET: api/Song
+        
+        // GET: api/Artist
         [HttpGet]
-        public ActionResult<IEnumerable<SongModel>> Get()
+        public ActionResult<IEnumerable<ArtistModel>> Get()
         {
-            List<SongModel> dispSongs = null;
+            List<ArtistModel> dispArtists = null;
 
             try
             {
-                dispSongs = Repo.GetAllSongs().Select(x => new SongModel
+                dispArtists = Repo.GetAllArtists().Select(x => new ArtistModel
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Artist = x.Artist,
-                    PlayTime = x.Length,
-                    Genre = x.Genre,
-                    Release = x.InitialRelease,
-                    Cover = x.Cover,
-                    Link = x.Link
+                    City = x.City,
+                    Stateprovice = x.Stateprovince,
+                    Country = x.Country,
+                    Formed = x.Formed,
+                    LatestRelease = x.LatestRelease,
+                    Website = x.Website
                 }).ToList();
             }
             catch (Exception ex)
@@ -47,23 +46,23 @@ namespace WebApplication.Controllers
                 return StatusCode(500, ex);
             }
 
-            return dispSongs;
+            return dispArtists;
         }
-
-        // GET: api/Song/5
+        
+        // GET: api/Artist/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST: api/Song
+        // POST: api/Artist
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT: api/Song/5
+        // PUT: api/Artist/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {

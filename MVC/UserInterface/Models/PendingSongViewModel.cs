@@ -17,10 +17,6 @@ namespace UserInterface.Models
         {
             return PendingSongs.FirstOrDefault(s => s.Name == name);
         }
-        public static PendingSongViewModel GetById(int id)
-        {
-            return PendingSongs.FirstOrDefault(s => s.Id == id);
-        }
         public static int NextId
         {
             get
@@ -33,7 +29,7 @@ namespace UserInterface.Models
 
             }
         }
-        public static async Task SyncPendingSongsAsync(HttpClient client)
+        public static async void SyncPendingSongsAsync(HttpClient client)
         {
             HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/pending");
             HttpResponseMessage response = await client.SendAsync(request);

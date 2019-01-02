@@ -1,29 +1,41 @@
 ﻿'use strict';
 
 function CardHover(card) {
-    card.addClass('shadow-lg');
+    card.classList.add('shadow-lg');
 }
 function CardExit(card) {
-    card.removeClass('shadow-lg');
+    card.classList.remove('shadow-lg');
 }
+
+function FindCardBase(card) {
+
+    if (!card.classList.contains('card-click'))
+        return FindCardBase(card.parentNode);
+
+    return card;
+}
+
 function onMouseOver() {
-    CardHover($(this));
+    CardHover(FindCardBase(event.target));
 }
 function onMouseOut() {
-    CardExit($(this));
+    CardExit(FindCardBase(event.target));
 }
 
-$('.card-click').mouseover(onMouseOver);
-$('.card-click').mouseout(onMouseOut);
+
+function onClick() {
+    let newEvent = new MouseEvent('click');
+    let button = event.target.querySelector("#main-card-button");
+    button.dispatchEvent(newEvent);
+}
 
 
-$('.favorite-card-button').click(function () {
-    if ($(this).hasClass('far')) {
-        $(this).removeClass('far');
-        $(this).addClass('fas');
-    }
-    else {
-        $(this).removeClass('fas');
-        $(this).addClass('far');
+document.addEventListener("DOMContentLoaded", () => {
+    let cards = document.getElementsByClassName("card-click");
+    for (var i = 0; i < cards.length; ++i) {
+
+        cards[i].addEventListener("mouseover", onMouseOver, false);
+        cards[i].addEventListener("mouseleave", onMouseOut);
+        cards[i].addEventListener("click", onClick);
     }
 });

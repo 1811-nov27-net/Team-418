@@ -16,17 +16,9 @@ namespace UserInterface.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateSong(int id)
+        public ActionResult CreateSong()
         {
-            PendingSongViewModel pendingSong = PendingSongViewModel.GetById(id);
-            CreateSongViewModel song = new CreateSongViewModel
-            {
-                Name = pendingSong.Name,
-                Artist = pendingSong.Artist,
-                Album = pendingSong.Album
-            };
-
-            return View(song);
+            return View();
         }
 
         [HttpPost]

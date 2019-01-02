@@ -5,21 +5,18 @@
 }
 <body>
     <div class="container col-9">
-        <div class="container row d-flex justify-content-center">
-            <h3 class="text-black-50 font-weight-bold">Pending Song Requests</h3>
-        </div>
         <br />
         @foreach (var item in Model)
         {
             <div class="card card-click m-2 shadow-sm">
                 <div class="card-body">
+                    <a id="main-card-button" class="card-text text-black-50 font-weight-bold d-flex justify-content-center"
+                       asp-area="" asp-controller="Admin" asp-action="CreateSong" asp-route-id="@item.Id">
+                    </a>
                     <div class="row">
                         <div class="col-1"></div>
-                        <a id="main-card-button" class="card-text text-black-50 font-weight-bold d-flex justify-content-center"
-                           asp-area="" asp-controller="Admin" asp-action="CreateSong" asp-route-id="@item.Id">
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </a>
                         <div class="h5 col-7 d-flex justify-content-start mt-2 text-black-50 font-weight-bold">
+                            @Html.DisplayFor(modelItem => item.Name)
                         </div>
                     </div>
                     <div class="row">

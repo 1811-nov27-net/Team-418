@@ -10,12 +10,12 @@ namespace DataAccess
         Task<string> AddAlbum(Library.Albums album);
         Task<string> AddArtist(Library.Artists artist);
         Task<string> AddCover(int originalId, int coverId);
+        Task<string> AddFavorite(int userId, int songId);
         Task<string> AddRequest(Library.PendingRequests request);
         Task<string> AddSong(Song song);
         Task<string> AddSongToAlbum(int songId, int albumId);
         Task<string> AddUser(Library.Users user);
-        Task<string> AddUserFavorite(int userId, int songId);
-
+        
         // READ METHODS ----------------------------------------------------------
         Task<Library.Albums> GetAlbumById(int id);
         Task<Library.Albums> GetAlbumByNameAndArtist(string name, int artistId);
@@ -50,6 +50,7 @@ namespace DataAccess
         Task<string> RemoveAlbum(int albumId);
         Task<string> RemoveAllSongsFromAlbum(int albumId);
         Task<string> RemoveArtist(int artistId);
+        Task<string> RemoveFavorite(int userId, int songId);
         Task<string> RemoveFavoritesBySong(int songId);
         Task<string> RemoveFavoritesByUser(int userId);
         Task<string> RemoveRequest(int requestId);
@@ -57,8 +58,6 @@ namespace DataAccess
         Task<string> RemoveSongFromAlbum(int songId, int albumId);
         Task<string> RemoveSongFromAllAlbums(int songId);
         Task<string> RemoveSongFromCovers(int songId);
-        Task<string> RemoveUser(int userId);
-
-        
+        Task<string> RemoveUser(int userId);   
     }
 }

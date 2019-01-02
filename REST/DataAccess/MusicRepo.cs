@@ -110,6 +110,44 @@ namespace DataAccess
             return "true";
         }
 
+        public async Task<string> AddFavorite(int userId, int songId)
+        {
+            if (_db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking() != null)
+            {
+                return "ERROR: User already has selected song listed as a favorite.  Operation abandoned.";
+            }
+
+            if (GetSongById(songId) == null)
+            {
+                return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
+            }
+
+            if (GetUserById(userId) == null)
+            {
+                return "ERROR: No user exists in the database with the given ID.  Operation abandoned.";
+            }
+
+            Favorites newFave = new Favorites
+            {
+                FSong = songId,
+                FUser = userId
+            };
+
+            try
+            {
+                await _db.Favorites.AddAsync(newFave);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Song could not be added to user's favorites.  Operation abandoned.  Please contact your system administrator";
+            }
+
+            // Return true so whatever calls this method can attempt to parse a boolean
+            // If boolean can't be parsed, then an error was returned that can be shown to the user
+            return "true";
+        }
+
         public async Task<string> AddRequest(Library.PendingRequests request)
         {
             PendingRequests newRequest = Mapper.Map(request);
@@ -210,44 +248,6 @@ namespace DataAccess
                 return "CRITICAL ERROR: User could not be added to the database.  Operation abandoned.  Please contact your system administrator";
             }
 
-            return "true";
-        }
-
-        public async Task<string> AddUserFavorite(int userId, int songId)
-        {
-            if (_db.Favorites.Where(u => u.FUser == userId).Where(s => s.FSong == songId).AsNoTracking() != null)
-            {
-                return "ERROR: User already has selected song listed as a favorite.  Operation abandoned.";
-            }
-
-            if (GetSongById(songId) == null)
-            {
-                return "ERROR: No song exists in the database with the given ID.  Operation abandoned.";
-            }
-
-            if (GetUserById(userId) == null)
-            {
-                return "ERROR: No user exists in the database with the given ID.  Operation abandoned.";
-            }
-
-            Favorites newFave = new Favorites
-            {
-                FSong = songId,
-                FUser = userId
-            };
-
-            try
-            {
-                await _db.Favorites.AddAsync(newFave);
-                await _db.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return "CRITICAL ERROR: Song could not be added to user's favorites.  Operation abandoned.  Please contact your system administrator";
-            }
-
-            // Return true so whatever calls this method can attempt to parse a boolean
-            // If boolean can't be parsed, then an error was returned that can be shown to the user
             return "true";
         }
 
@@ -588,7 +588,7 @@ namespace DataAccess
         {
             try
             {
-                Songs awaitMe = await _db.Songs.Where(s => s.SId == id).AsNoTracking().FirstOrDefaultAsync();
+                Songs awaitMe = await _db.Songs.Include(ar => ar.SArtistNavigation).Where(s => s.SId == id).AsNoTracking().FirstOrDefaultAsync();
 
                 if (awaitMe == null)
                 {
@@ -883,6 +883,28 @@ namespace DataAccess
             catch (Exception)
             {
                 return "CRITICAL ERROR: Artist could not be removed.  Operation abandoned.  Please contact your system administrator immediately.";
+            }
+
+            return "true";
+        }
+
+        public async Task<string> RemoveFavorite(int userId, int songId)
+        { 
+            Favorites removeMe = await _db.Favorites.Where(s => s.FSong == songId).Where(u => u.FSong == userId).FirstOrDefaultAsync();
+
+            if (removeMe == null)
+            {
+                return "false";
+            }
+
+            try
+            {
+                _db.Favorites.Remove(removeMe);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return "CRITICAL ERROR: Favorite entry could not be removed.  Operation abandoned.  Please contact your system administrator immediately.";
             }
 
             return "true";

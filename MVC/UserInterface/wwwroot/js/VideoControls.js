@@ -73,6 +73,7 @@ function PlayToggleMain() {
         }
         playVideo();
     }
+
     else {
         playButton.classList.remove('fa-pause');
         playButton.classList.add('fa-play');

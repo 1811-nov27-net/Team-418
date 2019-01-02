@@ -350,7 +350,7 @@ namespace DataAccess
             {
                 IEnumerable<Albums> returnUs = await _db.Albums.Include(x => x.AlbumSongs).Include(ar => ar.AlArtistNavigation).Where(x => x.AlbumSongs.Any(y => y.AsSong == songId)).ToListAsync();
 
-                if (returnUs == null)
+                if (returnUs.Count() <= 0)
                 {
                     return null;
                 }

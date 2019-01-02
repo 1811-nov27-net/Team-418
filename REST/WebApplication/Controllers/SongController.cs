@@ -27,7 +27,6 @@ namespace WebApplication.Controllers
         public ActionResult<IEnumerable<SongModel>> Get()
         {
             List<SongModel> dispSongs = null;
-
             try
             {
                 dispSongs = Repo.GetAllSongs().Result.Select(x => new SongModel
@@ -52,12 +51,13 @@ namespace WebApplication.Controllers
             return dispSongs;
         }
 
+        // Checks if the song ID in question has an album name
+        // attached to it
         public string CheckAlbumName(int Id)
         {
             var albumName = Repo.GetAllAlbumsBySong(Id).Result.First().Name;
             if (albumName == null)
                 albumName = "";
-            return albumName;
         }
 
         // need to implement

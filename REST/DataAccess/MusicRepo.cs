@@ -261,7 +261,7 @@ namespace DataAccess
         {
             try
             {
-                Albums awaitMe = await _db.Albums.Where(a => a.AlId == id).AsNoTracking().FirstOrDefaultAsync();
+                Albums awaitMe = await _db.Albums.Include(ar => ar.AlArtistNavigation).Where(a => a.AlId == id).AsNoTracking().FirstOrDefaultAsync();
 
                 if (awaitMe == null)
                 {

@@ -55,9 +55,12 @@ namespace WebApplication.Controllers
         // attached to it
         public string CheckAlbumName(int Id)
         {
-            var albumName = Repo.GetAllAlbumsBySong(Id).Result.First().Name;
+            var albumName = Repo.GetAllAlbumsBySong(Id);
             if (albumName == null)
-                albumName = "";
+            {
+                return "";
+            }
+            return albumName.Result.First().Name;
         }
 
         // need to implement

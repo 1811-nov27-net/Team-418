@@ -168,14 +168,17 @@ namespace DataAccess
         // Add song to database
         public async Task<string> AddSong(Library.Song song)
         {
-            if (GetSongByNameAndArtist(song.Name, GetArtistByName(song.Artist).Id) != null)
+            Library.Artists getArtist = await GetArtistByName(song.Artist);
+            Library.Song songExistsCheck = await GetSongByNameAndArtist(song.Name, getArtist.Id);
+
+            if (songExistsCheck != null)
             {
                 return "ERROR: Song already exists in the database.  Operation abandoned.";
             }
 
             Songs newSong = Mapper.Map(song);
 
-            newSong.SArtist = GetArtistByName(song.Artist).Id;
+            newSong.SArtist = getArtist.Id;
 
             try
             {

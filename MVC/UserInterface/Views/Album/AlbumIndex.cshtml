@@ -18,8 +18,8 @@
                     <i class="card-text text-black-50 fas fa-bolt fa-lg d-flex justify-content-center"></i>
                     <br/>
                     <a class="card-text text-black-50 d-flex justify-content-center small"
-                        asp-area="" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.Artist.Id">
-                        @Html.DisplayFor(modelItem => item.Artist.Name)
+                        asp-area="" asp-controller="Artist" asp-action="ArtistView" asp-route-id="@item.ArtistModel.Id">
+                        @Html.DisplayFor(modelItem => item.Artist)
                     </a>
                 </div>
             </div>

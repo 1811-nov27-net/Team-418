@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<UserInterface.Models.SongViewModel>
 
 @{
-    ViewData["Title"] = "SongIndex";
+    ViewData["Title"] = "Favorites";
 }
 <body>
     <div class="container col-9">
@@ -19,10 +19,6 @@
                              data-youtubeid="@item.Link">
                             @Html.DisplayFor(modelItem => item.Name)
                         </div>
-                        <div class="col-4">
-                            <i class="favorite-card-button d-flex justify-content-end text-black-50 far fa-star play-button"
-                               onclick="location.href='@Url.Action("AddFavorite", "User", new { id = item.Id })'"></i>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-6 d-flex justify-content-center">
@@ -32,7 +28,7 @@
 
                             <i class="text-black-50 fas fa-bolt fa-xs p-2"></i>
 
-                            <a class="text-black-50" asp-controller="Album" asp-action="AlbumView" asp-route-id="@item.AlbumModel.Id">
+                            <a class="text-black-50" asp-controller="Album" asp-action="SongDetails" asp-route-id="@item.AlbumModel.Id">
                                 @Html.DisplayFor(modelItem => item.Album)
                             </a>
                         </div>

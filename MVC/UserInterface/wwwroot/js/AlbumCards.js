@@ -29,6 +29,7 @@ function onClick() {
     button.dispatchEvent(newEvent);
 }
 
+
 document.addEventListener("DOMContentLoaded", () => {
     let cards = document.getElementsByClassName("card-click");
     for (var i = 0; i < cards.length; ++i) {
@@ -37,5 +38,4 @@ document.addEventListener("DOMContentLoaded", () => {
         cards[i].addEventListener("mouseleave", onMouseOut);
         cards[i].addEventListener("click", onClick);
     }
-
 });

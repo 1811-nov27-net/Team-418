@@ -116,7 +116,7 @@ namespace WebApplication.Controllers
                 Library.Artists checkArtist = new Library.Artists
                 {
                     Id = 0,
-                    Name = value.Name,
+                    Name = value.Artist,
                     City = "",
                     Stateprovince = "",
                     Country = "",
@@ -124,7 +124,11 @@ namespace WebApplication.Controllers
                     LatestRelease = DateTime.Now,
                     Website = ""
                 };
-                await Repo.AddArtist(checkArtist);
+                string artistError = await Repo.AddArtist(checkArtist);
+                if (!bool.Parse(artistError))
+                {
+                    Console.WriteLine(artistError);
+                }
 
                 // check if album exists
                 // if not, add it to the DB
@@ -138,7 +142,11 @@ namespace WebApplication.Controllers
                         Release = value.InitialRelease,
                         Genre = value.Genre
                     };
-                    await Repo.AddAlbum(checkAlbum);
+                    string albumError = await Repo.AddAlbum(checkAlbum);
+                    if (!bool.Parse(artistError))
+                    {
+                        Console.WriteLine(artistError);
+                    }
                 }
 
                 // since our DB song table does not have an album name
@@ -158,7 +166,11 @@ namespace WebApplication.Controllers
                     Link = value.Link
                 };
 
-                await Repo.AddSong(newSong);
+                string songError = await Repo.AddSong(newSong);
+                if (!bool.Parse(songError))
+                {
+                    Console.WriteLine(songError);
+                }
             }
             catch (Exception)
             {

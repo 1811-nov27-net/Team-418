@@ -70,21 +70,95 @@ namespace WebApplication.Controllers
             return album.Name;
         }
 
-        // need to implement
+        // throws an exception error, needs to be fixed
         // GET: api/Song/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<SongModel>> Get(int id)
         {
-            return "value";
+            SongModel dispSong = null;
+
+            try
+            {
+                // null reference exception on DataAccess.Mapper.Map(Songs song) in Mapper.cs, line 19
+                // AggregateException on Song getSong = Repo.GetSongById(id).Result;
+                Song getSong = Repo.GetSongById(id).Result;
+                dispSong = new SongModel
+                {
+                    Id = getSong.Id,
+                    Name = getSong.Name,
+                    Artist = getSong.Name,
+                    PlayTime = getSong.Length,
+                    Link = getSong.Link,
+                    Genre = getSong.Genre,
+                    Release = getSong.InitialRelease,
+                    Cover = getSong.Cover
+                };
+                dispSong.Album = await CheckAlbumName(getSong.Id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return dispSong;
         }
 
+        // needs to check for an album name, artist name
         // POST: api/Song
         [HttpPost]
-        public void Post([FromBody] Song value)
+        public async Task Post([FromBody] SongWithAlbum value)
         {
             try
             {
-                Repo.AddSong(value);
+                // check if artist exists
+                // if not, add it to the DB
+                Library.Artists checkArtist = new Library.Artists
+                {
+                    Id = 0,
+                    Name = value.Name,
+                    City = "",
+                    Stateprovince = "",
+                    Country = "",
+                    Formed = DateTime.Now,
+                    LatestRelease = DateTime.Now,
+                    Website = ""
+                };
+                await Repo.AddArtist(checkArtist);
+
+                // check if album exists
+                // if not, add it to the DB
+                if (value.Album != null)
+                {
+                    Library.Albums checkAlbum = new Library.Albums
+                    {
+                        Id = 0,
+                        Name = value.Album,
+                        Artist = value.Artist,
+                        Release = value.InitialRelease,
+                        Genre = value.Genre
+                    };
+                    await Repo.AddAlbum(checkAlbum);
+                }
+
+                // since our DB song table does not have an album name
+                // we are passing in from a different class that does have
+                // an album name into the actual Song class that gets utilized
+                // in the DB, then we will have to pass in the album name
+                // elsewhere
+                Song newSong = new Song
+                {
+                    Id = value.Id,
+                    Name = value.Name,
+                    Artist = value.Artist,
+                    Genre = value.Genre,
+                    Length = value.Length,
+                    InitialRelease = value.InitialRelease,
+                    Cover = value.Cover,
+                    Link = value.Link
+                };
+
+                await Repo.AddSong(newSong);
             }
             catch (Exception)
             {

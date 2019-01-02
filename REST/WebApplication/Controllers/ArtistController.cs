@@ -33,7 +33,7 @@ namespace WebApplication.Controllers
                     Id = x.Id,
                     Name = x.Name,
                     City = x.City,
-                    Stateprovice = x.Stateprovince,
+                    Stateprovince = x.Stateprovince,
                     Country = x.Country,
                     Formed = x.Formed,
                     LatestRelease = x.LatestRelease,
@@ -51,15 +51,44 @@ namespace WebApplication.Controllers
         
         // GET: api/Artist/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<ArtistModel> Get(int id)
         {
-            return "value";
+            ArtistModel dispArtist = null;
+            try
+            {
+                Library.Artists getArtist = Repo.GetArtistById(id).Result;
+                dispArtist = new ArtistModel
+                {
+                    Id = getArtist.Id,
+                    Name = getArtist.Name,
+                    City = getArtist.City,
+                    Stateprovince = getArtist.Stateprovince,
+                    Country = getArtist.Country,
+                    Formed = getArtist.Formed,
+                    LatestRelease = getArtist.LatestRelease,
+                    Website = getArtist.Website
+                };
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+
+            return dispArtist;
         }
 
         // POST: api/Artist
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Library.Artists value)
         {
+            try
+            {
+                Repo.AddArtist(value);
+            }
+            catch (Exception)
+            {
+                Response.StatusCode = 500;
+            }         
         }
 
         // PUT: api/Artist/5
@@ -72,6 +101,14 @@ namespace WebApplication.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            try
+            {
+                Repo.RemoveArtist(id);
+            }
+            catch (Exception)
+            {
+                Response.StatusCode = 500;
+            }
         }
     }
 }

@@ -313,8 +313,10 @@ namespace DataAccess
         {
             try
             {
-                IEnumerable<AlbumSongs> awaitJunction = await _db.AlbumSongs.Where(s => s.AsSong == songId).AsNoTracking().ToListAsync();
-                return awaitJunction.Select(x => GetAlbumById(x.AsAlbum).Result).ToList();
+                IEnumerable<AlbumSongs> awaitJunction = await _db.AlbumSongs.Where(s => s.AsSong == songId).ToListAsync();
+                IEnumerable<Library.Albums> returnUs = awaitJunction.Select(x => GetAlbumById(x.AsAlbum).Result).ToList();
+
+                return returnUs;
             }
             catch (ArgumentNullException)
             {

@@ -158,6 +158,7 @@ function playVideo(youtubeid) {
     if (player.getVideoData()['video_id'] == youtubeid) {
         player.playVideo();
     }
+
     else {
         player.loadVideoById(youtubeid);
         player.playVideo();   

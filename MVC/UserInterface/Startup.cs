@@ -25,6 +25,7 @@ namespace UserInterface
             UserViewModel.SyncUsersAsync(client);
             ArtistViewModel.SyncArtistAsync(client);
             AlbumViewModel.SyncAlbumsAsync(client);
+            PendingSongViewModel.SyncPendingSongsAsync(client);
         }
 
         public Startup(IConfiguration configuration)

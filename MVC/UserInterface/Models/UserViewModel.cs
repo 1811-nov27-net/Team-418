@@ -32,7 +32,7 @@ namespace UserInterface.Models
         {
             return Users.FirstOrDefault(u => u.Name == name);
         }
-        public static async void SyncUsersAsync(HttpClient client)
+        public static async Task SyncUsersAsync(HttpClient client)
         {
             HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/user");
             HttpResponseMessage response = await client.SendAsync(request);
@@ -45,6 +45,7 @@ namespace UserInterface.Models
 
             var responseBody = await response.Content.ReadAsStringAsync();
 
+            CurrentUser = null;
             Users.Clear();
             Users = JsonConvert.DeserializeObject<List<UserViewModel>>(responseBody);
         }

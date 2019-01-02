@@ -85,11 +85,11 @@ namespace WebApplication.Controllers
 
         // POST: api/User
         [HttpPost]
-        public void Post([FromBody] Library.Users value)
+        public async Task Post([FromBody] Library.Users value)
         {
             try
             {
-                Repo.AddUser(value);
+                await Repo.AddUser(value);
             }
             catch (Exception)
             {

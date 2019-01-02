@@ -21,70 +21,59 @@ namespace UserInterface.Controllers
         {
             return View();
         }
-
-        // TODO: Replace with Login2 once I have REST services
+        
         [HttpPost]
-        public ActionResult Login(AccountViewModel accountForm)
+        public async Task<ActionResult> Login(AccountViewModel accountForm)
         {
+            // Check for the user in the database
+            await UserViewModel.SyncUsersAsync(Client);
             UserViewModel user = UserViewModel.GetByName(accountForm.UserName);
+
             if(user == null)
             {
                 ModelState.AddModelError("Password", "Incorrect username or password");
                 return View();
             }
 
-            UserViewModel.CurrentUser = user;
+            /*
+            // User exists in the database, attempt to authorize
+            // Create the message to send to Account REST service
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Post, "api/Account/Login", accountForm);
+            // Send the request
+            HttpResponseMessage response = await Client.SendAsync(request);
 
-            return RedirectToAction("Song", "SongIndex");
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> Login2(AccountViewModel formAccount)
-        {
-            try
+            if (!response.IsSuccessStatusCode)
             {
-                if (!ModelState.IsValid)
+                if (response.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    return View();
+                    ModelState.AddModelError("Password", "Incorrect username or password");
                 }
-                // Get the user from the music database
-                HttpRequestMessage musicUserRequest = CreateRequestToService(HttpMethod.Post, "api/");
-
-                // Create the message to send to Account REST service
-                HttpRequestMessage request = CreateRequestToService(HttpMethod.Post, "api/Account/Login", formAccount);
-                // Send the request
-                HttpResponseMessage response = await Client.SendAsync(request);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    if (response.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        ModelState.AddModelError("Password", "Incorrect username or password");
-                    }
-                    // Return to same view, for a new log in attempt
-
-                    // TODO: Display error message for user
-                    return View();
-                }
-
-                var success = PassCookiesToClient(response);
-                if (!success)
-                {
-                    return View("Error");
-                }
-
-                // successful login
-                return RedirectToAction("Index", "Library");
-            }
-            catch (Exception)
-            {
+                // Login unsuccessfull
+                // Return to same view, for a new log in attempt
                 return View();
             }
+
+            var success = PassCookiesToClient(response);
+            if (!success)
+            {
+                return View("Error");
+            }
+            */
+
+            // Login was successful
+            UserViewModel.CurrentUser = user;
+            return RedirectToAction("SongIndex", "Song");
         }
 
         [HttpGet]
-        public async Task<ActionResult> Logout()
+        public ActionResult Logout()
+        {
+            UserViewModel.CurrentUser = null;
+            return RedirectToAction("SongIndex", "Song");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Logout2()
         {
             try
             {
@@ -119,7 +108,7 @@ namespace UserInterface.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateNewAccount(AccountViewModel formAccount)
+        public async Task<ActionResult> CreateNewAccount(AccountViewModel formAccount)
         {
             try
             {
@@ -128,38 +117,27 @@ namespace UserInterface.Controllers
                     return View();
                 }
 
-                UserViewModel user = new UserViewModel
-                {
-                    Name = formAccount.UserName,
-                    Admin = formAccount.Admin
-                };
-                UserViewModel.CurrentUser = user;
+                UserViewModel cUser = UserViewModel.CurrentUser;
 
-                return RedirectToAction("SongIndex", "Song");
-            }
-            catch (Exception)
-            {
-                return View();
-            }
-        }
+                // Check for the user in the database
+                await UserViewModel.SyncUsersAsync(Client);
 
-        [HttpPost]
-        public async Task<ActionResult> CreateNewAccount2(AccountViewModel formAccount)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
+                // Ensure the user does not already exist
+                if (UserViewModel.GetByName(formAccount.UserName) != null)
                 {
+                    ModelState.AddModelError("UserName", "Username already exists!");
                     return View();
                 }
 
+                /* Authorization is down. Fix later
+                // Username not taken, attempt to create user via authorization
                 // Use the Account/Register Post from the services to create a new user
                 HttpRequestMessage request = CreateRequestToService(HttpMethod.Post, "api/Account/Register", formAccount);
                 HttpResponseMessage response = await Client.SendAsync(request);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    switch(response.StatusCode)
+                    switch (response.StatusCode)
                     {
                         // Using forbidden as password unacceptable
                         case HttpStatusCode.Forbidden:
@@ -184,17 +162,40 @@ namespace UserInterface.Controllers
                 bool success = PassCookiesToClient(response);
                 if (!success)
                 {
-                    return View("Error");
+                    return View();
+                }
+                */
+
+                // User successfully created in Authorization database
+                // Add user to MusicDB
+                UserViewModel user = new UserViewModel
+                {
+                    Name = formAccount.UserName,
+                    Admin = formAccount.Admin
+                };
+
+                HttpRequestMessage addUserRequest = CreateRequestToService(HttpMethod.Post, "api/user", new { name = user.Name, admin = user.Admin });
+                HttpResponseMessage addUserResponse = await Client.SendAsync(addUserRequest);
+
+                if (!addUserResponse.IsSuccessStatusCode)
+                {
+                    // Unable to add the user to the database...
+                    // Return to same view, for a new log in attempt
+                    return View();
                 }
 
-                return RedirectToAction("Index", "Library");
+                // User was successfully created and added to both Authorization and
+                //  Music databases.
+                UserViewModel.CurrentUser = user;
+
+                return RedirectToAction("SongIndex", "Song");
             }
             catch (Exception)
             {
                 return View();
             }
         }
-
+        
         // Take the cookie from the service REST response and add it to the 
         //  header of the response we are currently using
         private bool PassCookiesToClient(HttpResponseMessage apiResponse)

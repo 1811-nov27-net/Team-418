@@ -20,7 +20,7 @@ namespace UserInterface
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
+            
             // Dummy Data
             if (AlbumViewModel.Albums.Count == 0)
             //if(false)
@@ -147,6 +147,7 @@ namespace UserInterface
                     options.Filters.Add(typeof(GetLoggedInUserFilter));
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -174,5 +175,6 @@ namespace UserInterface
                     template: "{controller=Song}/{action=SongIndex}/{id?}");
             });
         }
+        
     }
 }

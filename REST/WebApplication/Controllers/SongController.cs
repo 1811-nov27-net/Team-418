@@ -34,7 +34,7 @@ namespace WebApplication.Controllers
                     Id = x.Id,
                     Name = x.Name,
                     Artist = x.Artist,
-                    Album = AlbumNameCheck(x.Id),
+                    Album = CheckAlbumName(x.Id),
                     PlayTime = x.Length,
                     Genre = x.Genre,
                     Release = x.InitialRelease,
@@ -53,15 +53,11 @@ namespace WebApplication.Controllers
 
         // Checks if the song ID in question has an album name
         // attached to it
-        public string AlbumNameCheck(int Id)
+        public string CheckAlbumName(int Id)
         {
             var albumName = Repo.GetAllAlbumsBySong(Id).Result.First().Name;
             if (albumName == null)
-            {
                 albumName = "";
-                return albumName;
-            }
-            return albumName;
         }
 
         // need to implement

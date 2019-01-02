@@ -262,6 +262,12 @@ namespace DataAccess
             try
             {
                 Albums awaitMe = await _db.Albums.Where(a => a.AlId == id).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -275,6 +281,12 @@ namespace DataAccess
             try
             {
                 Albums awaitMe = await _db.Albums.Where(a => a.AlName == name).Where(ar => ar.AlArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -288,6 +300,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Albums> awaitUs = await _db.Albums.AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -301,6 +319,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Albums> awaitUs = await _db.Albums.Where(ar => ar.AlArtist == artistId).AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -316,6 +340,11 @@ namespace DataAccess
                 IEnumerable<AlbumSongs> awaitJunction = await _db.AlbumSongs.Where(s => s.AsSong == songId).ToListAsync();
                 IEnumerable<Library.Albums> returnUs = awaitJunction.Select(x => GetAlbumById(x.AsAlbum).Result).ToList();
 
+                if (returnUs == null)
+                {
+                    return null;
+                }
+
                 return returnUs;
             }
             catch (ArgumentNullException)
@@ -329,6 +358,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Artists> awaitUs = await _db.Artists.AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -342,6 +377,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Covers> awaitUs = await _db.Covers.Where(o => o.COriginal == originalId).AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -355,6 +396,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Favorites> awaitUs = await _db.Favorites.Where(u => u.FSong == songId).AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -369,6 +416,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Favorites> awaitUs = await _db.Favorites.Where(u => u.FUser == userId).AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -383,6 +436,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Songs> awaitUs = await _db.Songs.Include(a => a.SArtistNavigation).AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -396,6 +455,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Songs> awaitUs = await _db.Songs.Where(ar => ar.SArtist == artistId).AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -409,6 +474,12 @@ namespace DataAccess
             try
             {
                 IEnumerable<Users> awaitUs = await _db.Users.AsNoTracking().ToListAsync();
+
+                if (awaitUs == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitUs);
             }
             catch (ArgumentNullException)
@@ -422,6 +493,12 @@ namespace DataAccess
             try
             {
                 Artists awaitMe = await _db.Artists.Where(a => a.ArId == id).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -436,6 +513,12 @@ namespace DataAccess
             try
             {
                 Artists awaitMe = await _db.Artists.Where(a => a.ArName == name).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -449,6 +532,12 @@ namespace DataAccess
             try
             {
                 Covers awaitMe = await _db.Covers.Where(c => c.COriginal == coverId).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -462,6 +551,12 @@ namespace DataAccess
             try
             {
                 Songs awaitMe = await _db.Songs.Where(s => s.SId == id).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -475,6 +570,12 @@ namespace DataAccess
             try
             {
                 Songs awaitMe = await _db.Songs.Where(a => a.SName == name).Where(ar => ar.SArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -488,6 +589,12 @@ namespace DataAccess
             try
             {
                 AlbumSongs awaitMe = await _db.AlbumSongs.Where(s => s.AsSong == songId).Where(al => al.AsAlbum == albumId).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -501,6 +608,12 @@ namespace DataAccess
             try
             {
                 Users awaitMe = await _db.Users.Where(u => u.UId == id).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)
@@ -514,6 +627,12 @@ namespace DataAccess
             try
             {
                 Users awaitMe = await _db.Users.Where(u => u.UName == name).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
                 return Mapper.Map(awaitMe);
             }
             catch (ArgumentNullException)

@@ -25,7 +25,10 @@ namespace UserInterface.Controllers
         [HttpGet]
         public ActionResult PendingSongIndex()
         {
-            return View(PendingSongViewModel.PendingSongs);
+            if (UserViewModel.CurrentUser != null && UserViewModel.CurrentUser.Admin)
+                return View(PendingSongViewModel.PendingSongs);
+            else
+                return RedirectToAction("SongIndex", "Song");
         }
 
         [HttpGet]

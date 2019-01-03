@@ -188,6 +188,8 @@ $('.card-click').click(function () {
         pauseVideo($(this).data('youtubeid'));
     }
 
+    //let cardMethod = $(this).find($('.button-method')).trigger("click");
+
 });
 
 function SetAllPlayButtonsToPlay() {

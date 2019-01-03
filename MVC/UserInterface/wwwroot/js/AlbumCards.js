@@ -27,3 +27,7 @@ $('.favorite-card-button').click(function () {
         $(this).addClass('far');
     }
 });
+
+$('.card-button').click(function () {
+
+});

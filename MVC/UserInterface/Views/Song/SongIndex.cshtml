@@ -15,11 +15,11 @@
                             <i id="main-card-button" class="main-card-button d-flex justify-content-end font-weight-bold text-black-50 far fa-play-circle fa-s play-button"
                                data-youtubeid="@item.Link"></i>
                         </div>
-                        <div class="h5 col-7 d-flex justify-content-start mt-2 text-black-50 font-weight-bold play-button">
+                        <div class="h5 col-7 d-flex justify-content-start mt-2 text-black-50 font-weight-bold">
                             @Html.DisplayFor(modelItem => item.Name)
                         </div>
                         <div class="col-4">
-                            <i class="favorite-card-button d-flex justify-content-end text-black-50 far fa-star play-button" data-param="@Html.DisplayFor(modelItem => item.Name)"></i>
+                            <i class="favorite-card-button d-flex justify-content-end text-black-50 far fa-star"></i>
                         </div>
                     </div>
                     <div class="row">
@@ -64,5 +64,4 @@
         }
     </div>
     <script src="~/js/AlbumCards.js"></script>
-    <script src="~/js/VideoControls.js"></script>
 </body>

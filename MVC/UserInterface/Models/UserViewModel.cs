@@ -48,6 +48,7 @@ namespace UserInterface.Models
             CurrentUser = null;
             Users.Clear();
             Users = JsonConvert.DeserializeObject<List<UserViewModel>>(responseBody);
+
         }
         #endregion  
 
@@ -89,9 +90,31 @@ namespace UserInterface.Models
             FavoriteSongs.Add(song.Name);
         }
 
-        public async Task SyncFavorites()
+        //its super late
+        class dbfavoritesong
         {
+            public int id { get; set; }
+            public string userName { get; set; }
+            public string songName { get; set; }
+            public string songArtist { get; set; }
+        }
+
+        public async Task SyncFavorites(HttpClient client)
+        {
+            HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/favorite", new { username = Name });
+            HttpResponseMessage response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Error. 
+                return;
+            }
+
+            var responseBody = await response.Content.ReadAsStringAsync();
             
+            var dbFavoriteSongs = JsonConvert.DeserializeObject<List<dbfavoritesong>>(responseBody);
+
+            FavoriteSongs = dbFavoriteSongs.Select((song) => song.songName).ToList();
         }
 
         #endregion

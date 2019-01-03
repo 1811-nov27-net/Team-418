@@ -163,33 +163,65 @@ function playVideo(youtubeid) {
         player.loadVideoById(youtubeid);
         player.playVideo();
     }
+    SetMainButtonPause();
 }
 function pauseVideo(youtubeid) {
     if (player.getVideoData()['video_id'] == youtubeid) {
         player.pauseVideo();
+        SetMainButtonPlay();
     }
+    
 }
 
 let isPlaying = false;
 $('.card-click').click(function () {
+
+    SetAllPlayButtonsToPlay();
+
     if (!isPlaying) {
         playVideo($(this).data('youtubeid'));
         isPlaying = true;
+        TogglePlayButton($(this).find($('.play-button')));
     }
     else {
         isPlaying = false;
         pauseVideo($(this).data('youtubeid'));
     }
+
 });
 
-$('.play-button').click(function () {
-    if ($(this).hasClass('far')) {
-        $(this).removeClass('far');
-        $(this).addClass('fas');
+function SetAllPlayButtonsToPlay() {
+    let buttons = $('body').find($('.play-button'));
+    for (var i = 0; i < buttons.length; ++i) {
+        $(buttons[i]).removeClass('fa-pause-circle');
+        $(buttons[i]).addClass('fa-play-circle');
+    }
+}
+
+function TogglePlayButton(button) {
+
+    if (button.hasClass('fa-play-circle')) {
+        button.removeClass('fa-play-circle');
+        button.addClass('fa-pause-circle');
     }
     else {
-        $(this).removeClass('fas');
-        $(this).addClass('far');
+        button.removeClass('fa-pause-circle');
+        button.addClass('fa-play-circle');
     }
+}
 
+function SetMainButtonPlay() {
+    let mainButton = $('body').find($('#main-play-button'));
+    $(mainButton).removeClass('fa-pause');
+    $(mainButton).addClass('fa-play');
+}
+
+function SetMainButtonPause() {
+    let mainButton = $('body').find($('#main-play-button'));
+    $(mainButton).removeClass('fa-play');
+    $(mainButton).addClass('fa-pause');
+}
+
+$('.play-button').click(function () {
+    TogglePlayButton($(this));
 });

@@ -33,9 +33,16 @@ namespace UserInterface.Models
 
             }
         }
+        // its late.
+        class dbpendingsong
+        {
+            public string artistname { get; set; }
+            public string albumname { get; set; }
+            public string songname { get; set; }
+        }
         public static async Task SyncPendingSongsAsync(HttpClient client)
         {
-            HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/pending");
+            HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/request");
             HttpResponseMessage response = await client.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
@@ -47,7 +54,16 @@ namespace UserInterface.Models
             var responseBody = await response.Content.ReadAsStringAsync();
 
             PendingSongs.Clear();
-            PendingSongs = JsonConvert.DeserializeObject<List<PendingSongViewModel>>(responseBody);
+            var dbsongs = JsonConvert.DeserializeObject<List<dbpendingsong>>(responseBody);
+            foreach(var song in dbsongs)
+            {
+                PendingSongs.Add(new PendingSongViewModel
+                {
+                    Name = song.songname,
+                    Artist = song.artistname,
+                    Album = song.albumname
+                });
+            }
 
             return;
         }

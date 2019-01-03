@@ -54,6 +54,13 @@ namespace WebApplication.Controllers
         }
 
         // GET: api/Request/5
+
+        public class psong
+        {
+            public string songName { get; set; }
+            public string artistName { get; set; }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestModel>> Get(string songName, string artistName)
         {
@@ -110,12 +117,12 @@ namespace WebApplication.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public async Task<string> Delete(string songName, string artistName)
+        [HttpDelete]
+        public async Task<string> Delete(psong pendingsong)
         {
             try
             {
-                string removeMe = await Repo.RemoveRequest(songName, artistName);
+                string removeMe = await Repo.RemoveRequest(pendingsong.songName, pendingsong.artistName);
 
                 if (!bool.Parse(removeMe))
                 {

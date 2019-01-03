@@ -50,7 +50,7 @@
             <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Home</a>
         </div>
         <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
-            <i class="fas fa-user" style="padding-right:10px"></i>
+            <i class="fas fa-user"></i>
             @if (UserViewModel.CurrentUser == null)
             {
                 <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
@@ -59,7 +59,7 @@
             {
                 @if (UserViewModel.CurrentUser.Admin)
                 {
-                    <i class="fas fa-crown" style="padding-right:10px"></i>
+                    <i class="fas fa-crown"></i>
                     <a class="dropdown-item font-weight-bold text-black-50">@UserViewModel.CurrentUser.Name</a>
                     <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="User" asp-action="FavoritesView" asp-route-id="@UserViewModel.CurrentUser.Id">Favorites</a>
                     <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="PendingSongIndex">Song Requests</a>
@@ -74,7 +74,7 @@
             }
         </div>
         <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
-            <i class="fas fa-home" style="padding-right:10px"></i>
+            <i class="fas fa-carrot" style="padding-right:10px"></i>
             <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="RequestSong">Request Song</a>
         </div>
     </div>

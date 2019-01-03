@@ -83,10 +83,11 @@ namespace UserInterface.Controllers
                     Cover = songForm.Cover
                 };
 
-                /*
+
                 // Remove pending song
                 request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Delete, "https://localhost:44376/api/request", 
-                    new { songname = songForm.Name, artistname = songForm.Artist } );
+                    new { songName = songForm.Name, artistName = songForm.Artist });
+
                 response = await Client.SendAsync(request);
 
                 if (!response.IsSuccessStatusCode)
@@ -96,7 +97,7 @@ namespace UserInterface.Controllers
                 }
 
                 await PendingSongViewModel.SyncPendingSongsAsync(Client);
-                */            
+                          
 
                 return RedirectToAction("SongIndex", "Song");
             }

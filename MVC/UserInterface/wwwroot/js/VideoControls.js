@@ -227,3 +227,8 @@ function SetMainButtonPause() {
 $('.play-button').click(function () {
     TogglePlayButton($(this));
 });
+
+$('video-length').ready(function () {
+    
+    //$(this).text = 
+});

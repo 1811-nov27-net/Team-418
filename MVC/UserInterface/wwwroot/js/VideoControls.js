@@ -228,7 +228,31 @@ $('.play-button').click(function () {
     TogglePlayButton($(this));
 });
 
-$('video-length').ready(function () {
-    
-    //$(this).text = 
+function ToggleMainButton() {
+
+    if ($(this).hasClass('fa-play')) {
+        SetMainButtonPause();
+
+    }
+    else {
+        SetMainButtonPlay();
+    }
+}
+
+$('#main-play-button').click(function () {
+
+    SetAllPlayButtonsToPlay();
+
+    let id = player.getVideoData()['video_id'];
+    let miniButton = $(".card").find(`[data-youtubeid='${id}']`);
+
+    if (!isPlaying) {
+        isPlaying = true;
+        playVideo(id);
+        TogglePlayButton(miniButton);
+    }
+    else {
+        isPlaying = false;
+        pauseVideo(id);
+    }
 });

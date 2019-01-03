@@ -39,50 +39,63 @@
     </div>
 
     @* Left vertical navigation links *@
-    <div class="container position-fixed d-flex flex-column">
-        <div class="col-3">
-            <a asp-controller="Song" asp-action="SongIndex">
-                <img src="~/img/teapot.jpg" height="200" width="200" />
-            </a>
-        </div>
+    <div class="container position-fixed d-flex flex-column" style="z-index:10;">
         <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
             <i class="fas fa-home" style="padding-right:10px"></i>
             <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="SongIndex">Home</a>
         </div>
         <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
-            <i class="fas fa-user"></i>
-            @if (UserViewModel.CurrentUser == null)
-            {
-                <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-            }
-            else
-            {
-                @if (UserViewModel.CurrentUser.Admin)
-                {
-                    <i class="fas fa-crown"></i>
-                    <a class="dropdown-item font-weight-bold text-black-50">@UserViewModel.CurrentUser.Name</a>
-                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="User" asp-action="FavoritesView" asp-route-id="@UserViewModel.CurrentUser.Id">Favorites</a>
-                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="PendingSongIndex">Song Requests</a>
-                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                }
-                else
-                {
-                    <a class="dropdown-item font-weight-bold text-black-50">@UserViewModel.CurrentUser.Name</a>
-                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="User" asp-action="FavoritesView" asp-route-id="@UserViewModel.CurrentUser.Id">Favorites</a>
-                    <a class="dropdown-item font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
-                }
-            }
-        </div>
-        <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
             <i class="fas fa-carrot" style="padding-right:10px"></i>
             <a class="text-black-50" asp-area="" asp-controller="Song" asp-action="RequestSong">Request Song</a>
         </div>
+        <div class="col-2 btn btn-outline-secondary" style="margin-top:20px; margin-left:20px">
+            <i class="fas fa-user"></i>
+
+            @if (UserViewModel.CurrentUser != null)
+            {
+                if (UserViewModel.CurrentUser.Admin)
+                {
+                    <i class="fas fa-crown"></i>
+                }
+            }
+            <div class="d-flex flex-column">
+
+                @if (UserViewModel.CurrentUser == null)
+                {
+                    <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                }
+                else
+                {
+                    @if (UserViewModel.CurrentUser.Admin)
+                    {
+                        <a class="font-weight-bold text-black-50">@UserViewModel.CurrentUser.Name</a>
+                        <a class="font-weight-bold text-black-50" asp-area="" asp-controller="User" asp-action="FavoritesView" asp-route-id="@UserViewModel.CurrentUser.Id">Favorites</a>
+                        <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Song" asp-action="PendingSongIndex">Song Requests</a>
+                        <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                    }
+                    else
+                    {
+                        <a class="font-weight-bold text-black-50">@UserViewModel.CurrentUser.Name</a>
+                        <a class="font-weight-bold text-black-50" asp-area="" asp-controller="User" asp-action="FavoritesView" asp-route-id="@UserViewModel.CurrentUser.Id">Favorites</a>
+                        <a class="font-weight-bold text-black-50" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="col-3 d-flex justify-content-center" style="padding-top:235px;z-index:-10;">
+            <i class="text-black-50 fas fa-mug-hot fa-10x mt-5"></i>
+        </div>
+
     </div>
 
     @* Right vertical navigation links *@
     <div class="container col-12 position-fixed d-flex flex-column align-items-end text-center">
         <div class="col-3">
             <div id="player"></div>
+        </div>
+        <div class="col-3 d-flex justify-content-center" style="padding-top:300px;z-index:-10;">
+            <i class="text-black-50 fas fa-mug-hot fa-10x mt-5"></i>
         </div>
     </div>
 

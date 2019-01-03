@@ -1,34 +1,30 @@
 ﻿@model UserInterface.Models.PendingSongViewModel
 
 @{
-    ViewData["Title"] = "RequestSong";
+    ViewData["Title"] = "Song Request";
 }
-
-<h4 class="container d-flex justify-content-center text-black-50">Song Request Form</h4>
-<div class="container col-12 d-flex justify-content-center">
-    <div class="row">
-        <div class="col-12">
-            <form asp-action="RequestSong">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<body>
+    <div class="container card col-2 d-flex justify-content-center" style="z-index:11">
+        
+        <h5 class="d-flex justify-content-center text-black-50 font-weight-bold m-3">Song Request</h5>
+        
+        <form id="login-form" class="text-left" asp-action="Login">
+            <div class="form-group">
+                <div asp-validation-summary="ModelOnly" class="form-invalid"></div>
                 <div class="form-group">
-                    <label asp-for="Name" class="control-label d-flex justify-content-center"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <label asp-for="Name" class="sr-only"></label>
+                    <input asp-for="Name" class="form-control" placeholder="song name" />
+                    <span asp-validation-for="Name" class="form-invalid"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Artist" class="control-label d-flex justify-content-center"></label>
-                    <input asp-for="Artist" class="form-control" />
-                    <span asp-validation-for="Artist" class="text-danger"></span>
+                    <label asp-for="Artist" class="sr-only"></label>
+                    <input asp-for="Artist" class="form-control" placeholder="artist" />
+                    <span asp-validation-for="Artist" class="form-invalid"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Album" class="control-label d-flex justify-content-center"></label>
-                    <input asp-for="Album" class="form-control" />
-                    <span asp-validation-for="Album" class="text-danger"></span>
+                <div class="form-group d-flex justify-content-center">
+                    <input type="submit" value="Request" class="btn btn-outline-secondary" />
                 </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-</div>
+</body>

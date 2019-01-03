@@ -2,8 +2,10 @@
 
 function CardHover(card) {
     card.addClass('shadow-lg');
+    card.removeClass('shadow-sm');
 }
 function CardExit(card) {
+    card.addClass('shadow-sm');
     card.removeClass('shadow-lg');
 }
 function onMouseOver() {
@@ -12,9 +14,17 @@ function onMouseOver() {
 function onMouseOut() {
     CardExit($(this));
 }
+function onMouseDown() {
+    $(this).addClass('bg-light');
+}
+function onMouseUp() {
+    $(this).removeClass('bg-light');
+}
 
 $('.card-click').mouseover(onMouseOver);
 $('.card-click').mouseout(onMouseOut);
+$('.card-click').mousedown(onMouseDown);
+$('.card-click').mouseup(onMouseUp);
 
 
 $('.favorite-card-button').click(function () {
@@ -28,3 +38,5 @@ $('.favorite-card-button').click(function () {
         $(this).addClass('far');
     }
 });
+
+

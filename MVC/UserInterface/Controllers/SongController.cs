@@ -13,64 +13,6 @@ namespace UserInterface.Controllers
     {
         public SongController(HttpClient client) : base(client)
         {
-            if (SongViewModel.Songs.Count == 0)
-            {
-                ArtistViewModel artist = new ArtistViewModel
-                {
-                    Name = "Twenty One Pilots"
-                };
-                AlbumViewModel trench = new AlbumViewModel
-                {
-                    Name = "Trench"
-                };
-                AlbumViewModel blurryface = new AlbumViewModel
-                {
-                    Name = "Blurryface"
-                };
-                trench.Artist = artist.Name;
-                blurryface.Artist = artist.Name;
-                artist.Albums.Add(trench);
-                artist.Albums.Add(blurryface);
-
-                // Actual songs.
-                SongViewModel song = new SongViewModel()
-                {
-                    Album = trench.Name,
-                    Artist = artist.Name,
-                    Name = "Chlorine",
-                    PlayTime = new TimeSpan(0, 5, 24),
-                    Link = "Wc79sjzjNuo"
-
-                };
-                trench.Songs.Add(song);
-                song = new SongViewModel()
-                {
-                    Album = trench.Name,
-                    Artist = artist.Name,
-                    Name = "Pet Cheetah",
-                    PlayTime = new TimeSpan(0, 3, 18),
-                    Link = "VGMmSOsNAdc"
-                };
-                trench.Songs.Add(song);
-                song = new SongViewModel()
-                {
-                    Album = blurryface.Name,
-                    Artist = artist.Name,
-                    Name = "Ride",
-                    PlayTime = new TimeSpan(0, 3, 34),
-                    Link = "Pw-0pbY9JeU"
-                };
-                blurryface.Songs.Add(song);
-                song = new SongViewModel()
-                {
-                    Album = blurryface.Name,
-                    Artist = artist.Name,
-                    Name = "Polarize",
-                    PlayTime = new TimeSpan(0, 3, 46),
-                    Link = "MiPBQJq49xk"
-                };
-                blurryface.Songs.Add(song);
-            }
         }
 
         [HttpGet]
@@ -95,7 +37,7 @@ namespace UserInterface.Controllers
         //TODO: Replace with RequestSongDB
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RequestSong(PendingSongViewModel songForm)
+        public ActionResult RequestSongold(PendingSongViewModel songForm)
         {
             try
             {
@@ -114,7 +56,7 @@ namespace UserInterface.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RequestSongDB(PendingSongViewModel song)
+        public async Task<ActionResult> RequestSong(PendingSongViewModel song)
         {
             try
             {
@@ -123,22 +65,26 @@ namespace UserInterface.Controllers
                     return RedirectToAction("Song", "SongIndex");
                 }
 
+                PendingSongViewModel.PendingSongs.Add(song);
 
                 // use POST method, not GET, based on the route the service has defined
-                HttpRequestMessage request = CreateRequestToService(HttpMethod.Post, "api/request", song);
+                {
+    }
+                HttpRequestMessage request = CreateRequestToService(HttpMethod.Post, "api/request", 
+                    new { artistname = song.Artist, albumname = song.Album, songname = song.Name });
                 HttpResponseMessage response = await Client.SendAsync(request);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Song", "SongIndex");
+                    return RedirectToAction("SongIndex", "Song");
                 }
 
-                return RedirectToAction("Song", "SongIndex");
+                return RedirectToAction("SongIndex", "Song");
 
             }
             catch
             {
-                return RedirectToAction("Song", "SongIndex");
+                return RedirectToAction("SongIndex", "Song");
             }
         }
 

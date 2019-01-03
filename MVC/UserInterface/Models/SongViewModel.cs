@@ -40,6 +40,18 @@ namespace UserInterface.Models
 
             }
         }
+        // its still late.
+        class dbSong
+        {
+            public string name { get; set; }
+            public string artist { get; set; }
+            public string album { get; set; }
+            public TimeSpan? playTime { get; set; }
+            public string link { get; set; }
+            public string genre { get; set; }
+            public DateTime? release { get; set; }
+            public bool? cover { get; set; }
+        }
         public static async Task SyncSongsAsync(HttpClient client)
         {
             HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/song");
@@ -54,7 +66,35 @@ namespace UserInterface.Models
             var responseBody = await response.Content.ReadAsStringAsync();
 
             Songs.Clear();
-            Songs = JsonConvert.DeserializeObject<List<SongViewModel>>(responseBody);
+
+            var dbSongs = JsonConvert.DeserializeObject<List<dbSong>>(responseBody);
+
+            foreach(var song in dbSongs)
+            {
+                SongViewModel vmSong = new SongViewModel
+                {
+                    Name = song.name,
+                    Artist = song.artist,
+                    Album = song.album,
+                    Link = song.link,
+                    Genre = song.genre,
+                    Cover = song.cover
+
+                };
+                if (song.playTime == null)
+                {
+                    vmSong.PlayTime = new TimeSpan();
+                }
+                else
+                    vmSong.PlayTime = (TimeSpan)song.playTime;
+                if (song.release == null)
+                {
+                    vmSong.ReleaseDate = new DateTime();
+                }
+                else
+                    vmSong.ReleaseDate = (DateTime)song.release;
+                
+            }
 
             return;
         }
@@ -64,7 +104,7 @@ namespace UserInterface.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Artist { get; set; }
-        public string Album  { get; set; }
+        public string Album { get; set; }
         [DataType(DataType.Time)]
         public TimeSpan PlayTime { get; set; }
         public string Link { get; set; }
@@ -73,7 +113,7 @@ namespace UserInterface.Models
         public DateTime ReleaseDate { get; set; }
         public bool? Cover { get; set; }
         public ArtistViewModel ArtistModel { get => ArtistViewModel.GetByName(Artist); }
-        public AlbumViewModel  AlbumModel  { get => AlbumViewModel.GetByName(Album); }
+        public AlbumViewModel AlbumModel { get => AlbumViewModel.GetByName(Album); }
         #endregion
 
         #region Constructors

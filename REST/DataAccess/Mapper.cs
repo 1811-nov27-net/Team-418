@@ -120,7 +120,6 @@ namespace DataAccess
 
         public static AlbumSongs Map(Library.AlbumSongs albumSong) => new AlbumSongs
         {
-            AsId = albumSong.Id,
             AsSong = albumSong.Song,
             AsAlbum = albumSong.Album
         };
@@ -138,7 +137,6 @@ namespace DataAccess
 
         public static Favorites Map(Library.Favorites favorite) => new Favorites
         {
-            FId = favorite.Id,
             FUser = favorite.User,
             FSong = favorite.Song
         };
@@ -159,7 +157,6 @@ namespace DataAccess
 
         public static PendingRequests Map(Library.PendingRequests request) => new PendingRequests
         {
-            PrId = request.Id,
             PrArtistid = request.Artistid,
             PrArtistname = request.Artistname,
             PrAlbumid = request.Albumid,
@@ -180,7 +177,6 @@ namespace DataAccess
 
         public static Users Map(Library.Users user) => new Users
         {
-            UId = user.Id,
             UName = user.Name,
             UAdmin = user.Admin
         };

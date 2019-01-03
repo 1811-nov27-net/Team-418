@@ -85,15 +85,28 @@ namespace WebApplication.Controllers
 
         // POST: api/User
         [HttpPost]
-        public async Task Post([FromBody] Library.Users value)
+        public async Task<string> Post([FromBody] string name, bool admin)
         {
             try
             {
-                await Repo.AddUser(value);
+                Library.Users newUser = new Library.Users
+                {
+                    Name = name,
+                    Admin = admin
+                };
+
+                string addMe = await Repo.AddUser(newUser);
+
+                if (!bool.Parse(addMe))
+                {
+                    return addMe;
+                }
+
+                return "User added!";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Response.StatusCode = 500;
+                return StatusCode(500, ex).ToString();
             }
 
         }

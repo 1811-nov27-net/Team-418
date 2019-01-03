@@ -51,6 +51,37 @@ namespace UserInterface.Controllers
                 return RedirectToAction("SongIndex", "Song");
             }
         }
+        [HttpGet]
+        public async Task<ActionResult> RemoveFavorite(int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid || UserViewModel.CurrentUser == null)
+                    return RedirectToAction("SongIndex", "Song");
+
+                var song = SongViewModel.GetById(id);
+                if (!UserViewModel.CurrentUser.FavoriteSongs.Contains(song.Name))
+                    return RedirectToAction("SongIndex", "Song");
+
+                UserViewModel.CurrentUser.FavoriteSongs.Remove(song.Name);
+
+                HttpRequestMessage request = CreateRequestToService(HttpMethod.Delete, "api/favorite",
+                   new { UserName = UserViewModel.CurrentUser.Name, SongName = song.Name, SongArtist = song.Artist });
+                HttpResponseMessage response = await Client.SendAsync(request);
+
+                // (if status code is not 200-299 (for success))
+                if (!response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("SongIndex", "Song");
+                }
+
+                return RedirectToAction(nameof(FavoritesView), new { id = UserViewModel.CurrentUser.Id });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("SongIndex", "Song");
+            }
+        }
 
 
 

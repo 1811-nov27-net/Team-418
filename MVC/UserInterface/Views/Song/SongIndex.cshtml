@@ -24,7 +24,7 @@
                                 if (UserViewModel.CurrentUser.FavoriteSongs.Contains(item.Name))
                                 {
                                     <i class="favorite-card-button d-flex justify-content-end text-black-50 fas fa-star"></i>
-                                    <a id="favorite-card-action" class="favorite-card-action d-flex justify-content-end text-black-50" asp-controller="User" asp-action="AddFavorite" asp-route-id="@item.Id">fav</a>
+                                    <a id="favorite-card-action" class="favorite-card-action d-flex justify-content-end text-black-50" asp-controller="User" asp-action="RemoveFavorite" asp-route-id="@item.Id">fav</a>
 
                                 }
                                 else

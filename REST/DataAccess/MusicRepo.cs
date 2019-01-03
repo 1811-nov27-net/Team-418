@@ -919,7 +919,7 @@ namespace DataAccess
 
         public async Task<string> RemoveFavorite(int userId, int songId)
         { 
-            Favorites removeMe = await _db.Favorites.Where(s => s.FSong == songId).Where(u => u.FSong == userId).FirstOrDefaultAsync();
+            Favorites removeMe = await _db.Favorites.Where(s => s.FSong == songId).Where(u => u.FUser == userId).FirstOrDefaultAsync();
 
             if (removeMe == null)
             {

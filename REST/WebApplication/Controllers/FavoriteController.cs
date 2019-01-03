@@ -80,7 +80,7 @@ namespace WebApplication.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<string> Delete(FavoriteModel newFave)
         {
             try

@@ -4,7 +4,7 @@
     ViewData["Title"] = "CreateSong";
 }
 
-<div class="container card col-3 d-flex justify-content-center">
+<div class="container card col-3 d-flex justify-content-center" style="z-index:11">
 
     <h4 class="d-flex justify-content-center text-black-50 font-weight-bold m-2">Create Song</h4>
 
@@ -25,17 +25,17 @@
             <input asp-for="Album" class="form-control" />
             <span asp-validation-for="Album" class="text-danger"></span>
         </div>
-        <div class="form-group m-0">
+        @*<div class="form-group m-0">
             <label asp-for="Length" class="control-label"></label>
             <input asp-for="Length" class="form-control" />
             <span asp-validation-for="Length" class="text-danger"></span>
-        </div>
+        </div>*@
         <div class="form-group m-0">
             <label asp-for="Link" class="control-label"></label>
             <input asp-for="Link" class="form-control" />
             <span asp-validation-for="Link" class="text-danger"></span>
         </div>
-        <div class="form-group m-0">
+        @*<div class="form-group m-0">
             <label asp-for="Genre" class="control-label"></label>
             <input asp-for="Genre" class="form-control" />
             <span asp-validation-for="Genre" class="text-danger"></span>
@@ -49,7 +49,7 @@
             <label class="form-check-label">
                 <input class="form-check-input" asp-for="Cover" /> @Html.DisplayNameFor(model => model.Cover)
             </label>
-        </div>
+        </div>*@
         <div class="form-group d-flex justify-content-center">
             <input type="submit" value="Create" class="btn btn-primary" />
         </div>

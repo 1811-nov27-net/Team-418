@@ -27,8 +27,22 @@
                         <div class="h5 col-7 d-flex justify-content-start mt-2 text-black-50 font-weight-bold">
                             @Html.DisplayFor(modelItem => item.Name)
                         </div>
-                        <div class="col-4">
-                            <i class="favorite-card-button d-flex justify-content-end text-black-50 far fa-star"></i>
+                        <div class="col-4 favorite-card-button">
+                            @if (UserViewModel.CurrentUser != null)
+                            {
+                                if (UserViewModel.CurrentUser.FavoriteSongs.Contains(item.Name))
+                                {
+                                    <i class="favorite-card-button d-flex justify-content-end text-black-50 fas fa-star"></i>
+                                    <a id="favorite-card-action" class="favorite-card-action d-flex justify-content-end text-black-50" asp-controller="User" asp-action="AddFavorite" asp-route-id="@item.Id">fav</a>
+
+                                }
+                                else
+                                {
+                                    <i class="favorite-card-button d-flex justify-content-end text-black-50 far fa-star"></i>
+                                    <a id="favorite-card-action" class="favorite-card-action d-flex justify-content-end text-black-50" asp-controller="User" asp-action="AddFavorite" asp-route-id="@item.Id">fav</a>
+
+                                }
+                            }
                         </div>
                     </div>
                     <div class="row">
@@ -63,8 +77,8 @@
                             }
                         </div>
                         <div class="col-6 pr-4">
-                            <a class="text-black-50 d-flex justify-content-end">
-                                @Html.DisplayFor(modelItem => item.PlayTime)
+                            <a class="video-length text-black-50 d-flex justify-content-end">
+
                             </a>
                         </div>
                     </div>

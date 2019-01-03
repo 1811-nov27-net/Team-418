@@ -62,6 +62,7 @@ namespace UserInterface.Controllers
 
             // Login was successful
             UserViewModel.CurrentUser = user;
+            await user.SyncFavorites(Client);
             return RedirectToAction("SongIndex", "Song");
         }
 
@@ -187,6 +188,7 @@ namespace UserInterface.Controllers
                 // User was successfully created and added to both Authorization and
                 //  Music databases.
                 UserViewModel.CurrentUser = user;
+                await user.SyncFavorites(Client);
 
                 return RedirectToAction("SongIndex", "Song");
             }

@@ -21,6 +21,7 @@ $('.favorite-card-button').click(function () {
     if ($(this).hasClass('far')) {
         $(this).removeClass('far');
         $(this).addClass('fas');
+        $(this.nextElementSibling).trigger('click');
     }
     else {
         $(this).removeClass('fas');

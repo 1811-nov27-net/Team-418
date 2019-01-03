@@ -21,7 +21,7 @@ namespace WebApplication.Controllers
         }
 
         // GET: api/Favorite/5
-        [HttpGet("{userName}")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<FavoriteModel>>> Get(UserModel user)
         {
             List<FavoriteModel> dispFaves = new List<FavoriteModel>();

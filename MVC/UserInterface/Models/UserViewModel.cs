@@ -101,7 +101,8 @@ namespace UserInterface.Models
 
         public async Task SyncFavorites(HttpClient client)
         {
-            HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, "https://localhost:44376/api/favorite", new { username = Name });
+            HttpRequestMessage request = AServiceController.CreateRequestToServiceNoCookie(HttpMethod.Get, 
+                "https://localhost:44376/api/favorite", new { Name = Name });
             HttpResponseMessage response = await client.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)

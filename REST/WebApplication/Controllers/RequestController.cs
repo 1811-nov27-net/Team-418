@@ -55,11 +55,11 @@ namespace WebApplication.Controllers
 
         // GET: api/Request/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RequestModel>> Get(int id)
+        public async Task<ActionResult<RequestModel>> Get(string songName, string artistName)
         {
             try
             {
-                Library.PendingRequests request = await Repo.GetRequestById(id);
+                Library.PendingRequests request = await Repo.GetRequestBySongAndArtist(songName, artistName);
 
                 return new RequestModel
                 {
@@ -79,11 +79,21 @@ namespace WebApplication.Controllers
 
         // POST: api/Request
         [HttpPost]
-        public async Task<string> Post([FromBody] Library.PendingRequests value)
+        public async Task<string> Post([FromBody] string song, string artist, string album)
         {
             try
             {
-                string addMe = await Repo.AddRequest(value);
+                Library.PendingRequests request = new Library.PendingRequests
+                {
+                    Id = -1,
+                    Albumid = null,
+                    Albumname = album,
+                    Artistid = null,
+                    Artistname = artist,
+                    Songname = song
+                };
+
+                string addMe = await Repo.AddRequest(request);
 
                 if (!bool.Parse(addMe))
                 {
@@ -101,11 +111,11 @@ namespace WebApplication.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public async Task<string> Delete(int id)
+        public async Task<string> Delete(string songName, string artistName)
         {
             try
             {
-                string removeMe = await Repo.RemoveRequest(id);
+                string removeMe = await Repo.RemoveRequest(songName, artistName);
 
                 if (!bool.Parse(removeMe))
                 {

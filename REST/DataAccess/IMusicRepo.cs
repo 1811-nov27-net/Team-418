@@ -34,6 +34,7 @@ namespace DataAccess
         Task<Library.Artists> GetArtistByName(string name);
         Task<Library.Covers> GetOriginalByCover(int coverId);
         Task<Library.PendingRequests> GetRequestById(int id);
+        Task<Library.PendingRequests> GetRequestBySongAndArtist(string song, string artist);
         Task<Song> GetSongById(int id);
         Task<Song> GetSongByNameAndArtist(string name, int artistId);
         Task<Library.AlbumSongs> GetSongFromAlbum(int songId, int albumId);
@@ -53,7 +54,7 @@ namespace DataAccess
         Task<string> RemoveFavorite(int userId, int songId);
         Task<string> RemoveFavoritesBySong(int songId);
         Task<string> RemoveFavoritesByUser(int userId);
-        Task<string> RemoveRequest(int requestId);
+        Task<string> RemoveRequest(string song, string artist);
         Task<string> RemoveSong(int songId);
         Task<string> RemoveSongFromAlbum(int songId, int albumId);
         Task<string> RemoveSongFromAllAlbums(int songId);

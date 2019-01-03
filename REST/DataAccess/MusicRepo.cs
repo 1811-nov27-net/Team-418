@@ -594,6 +594,25 @@ namespace DataAccess
             }
         }
 
+        public async Task<Library.PendingRequests> GetRequestBySongAndArtist(string song, string artist)
+        {
+            try
+            {
+                PendingRequests awaitMe = await _db.PendingRequests.Where(s => s.PrSongname == song).Where(a => a.PrArtistname == artist).AsNoTracking().FirstOrDefaultAsync();
+
+                if (awaitMe == null)
+                {
+                    return null;
+                }
+
+                return Mapper.Map(awaitMe);
+            }
+            catch (ArgumentNullException)
+            {
+                return null;
+            }
+        }
+
         public async Task<Library.Song> GetSongById(int id)
         {
             try
@@ -964,9 +983,9 @@ namespace DataAccess
             return "true";
         }
 
-        public async Task<string> RemoveRequest(int requestId)
+        public async Task<string> RemoveRequest(string song, string artist)
         {
-            PendingRequests removeMe = await _db.PendingRequests.Where(r => r.PrId == requestId).FirstOrDefaultAsync();
+            IEnumerable<PendingRequests> removeMe = await _db.PendingRequests.Where(s => s.PrSongname == song).Where(a => a.PrArtistname == artist).ToListAsync();
 
             if (removeMe == null)
             {
@@ -975,12 +994,12 @@ namespace DataAccess
 
             try
             {
-                _db.PendingRequests.Remove(removeMe);
+                _db.PendingRequests.RemoveRange(removeMe);
                 await _db.SaveChangesAsync();
             }
             catch (Exception)
             {
-                return "CRITICAL ERROR: Song could not be removed from favorites.  Operation abandoned.  Please contact your system administrator immediately.";
+                return "CRITICAL ERROR: Request could not be removed.  Operation abandoned.  Please contact your system administrator immediately.";
             }
 
             return "true";

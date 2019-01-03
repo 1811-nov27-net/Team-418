@@ -111,34 +111,48 @@ namespace WebApplication.Controllers
         {
             try
             {
-                // check if artist exists
-                // if not, add it to the DB
-                Library.Artists checkArtist = new Library.Artists
+                if (await Repo.GetArtistByName(value.Artist) == null)
                 {
-                    Id = 0,
-                    Name = value.Name,
-                    City = "",
-                    Stateprovince = "",
-                    Country = "",
-                    Formed = DateTime.Now,
-                    LatestRelease = DateTime.Now,
-                    Website = ""
-                };
-                await Repo.AddArtist(checkArtist);
+                    Library.Artists checkArtist = new Library.Artists
+                    {
+                        Id = 0,
+                        Name = value.Artist,
+                        City = "",
+                        Stateprovince = "",
+                        Country = "",
+                        Formed = DateTime.Now,
+                        LatestRelease = DateTime.Now,
+                        Website = ""
+                    };
+                    string artistError = await Repo.AddArtist(checkArtist);
+                    if (!bool.Parse(artistError))
+                    {
+                        Console.WriteLine(artistError);
+                    }
+                }
+                
 
                 // check if album exists
                 // if not, add it to the DB
                 if (value.Album != null)
                 {
-                    Library.Albums checkAlbum = new Library.Albums
+                    Library.Artists getArtist = await Repo.GetArtistByName(value.Artist);
+                    if (await Repo.GetAlbumByNameAndArtist(value.Album, getArtist.Id) == null)
                     {
-                        Id = 0,
-                        Name = value.Album,
-                        Artist = value.Artist,
-                        Release = value.InitialRelease,
-                        Genre = value.Genre
-                    };
-                    await Repo.AddAlbum(checkAlbum);
+                        Library.Albums checkAlbum = new Library.Albums
+                        {
+                            Id = 0,
+                            Name = value.Album,
+                            Artist = value.Artist,
+                            Release = value.InitialRelease,
+                            Genre = value.Genre
+                        };
+                        string albumError = await Repo.AddAlbum(checkAlbum);
+                        if (!bool.Parse(albumError))
+                        {
+                            Console.WriteLine(albumError);
+                        }
+                    }                  
                 }
 
                 // since our DB song table does not have an album name
@@ -158,7 +172,11 @@ namespace WebApplication.Controllers
                     Link = value.Link
                 };
 
-                await Repo.AddSong(newSong);
+                string songError = await Repo.AddSong(newSong);
+                if (!bool.Parse(songError))
+                {
+                    Console.WriteLine(songError);
+                }
             }
             catch (Exception)
             {

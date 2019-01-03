@@ -21,16 +21,17 @@ namespace WebApplication.Controllers
         }
 
         // GET: api/Favorite/5
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<FavoriteModel>>> Get(int userId)
+        [HttpGet("{userName}")]
+        public async Task<ActionResult<IEnumerable<FavoriteModel>>> Get(string userName)
         {
             List<FavoriteModel> dispFaves = new List<FavoriteModel>();
 
             try
             {
-                IEnumerable<Library.Favorites> faves = await Repo.GetAllFavoritesByUser(userId);
+                Library.Users getUser = await Repo.GetUserByName(userName);
+                IEnumerable<Library.Favorites> faves = await Repo.GetAllFavoritesByUser(getUser.Id);
 
-                Library.Users user = await Repo.GetUserById(userId);
+                Library.Users user = await Repo.GetUserById(getUser.Id);
 
                 foreach (var item in faves)
                 {

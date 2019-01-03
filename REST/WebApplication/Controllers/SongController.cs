@@ -153,6 +153,8 @@ namespace WebApplication.Controllers
                         {
                             Console.WriteLine(albumError);
                         }
+
+                        getAlbum = await Repo.GetAlbumByNameAndArtist(value.Album, getArtist.Id);
                     }                  
                 }
 

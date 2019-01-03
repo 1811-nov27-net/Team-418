@@ -61,13 +61,13 @@ namespace WebApplication.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public ActionResult<UserModel> Get(int id)
+        public ActionResult<UserModel> Get(UserModel user)
         {
             UserModel dispUser = null;
             // need a get all users method in Repo
             try
             {
-                Library.Users getUser = Repo.GetUserById(id).Result;
+                Library.Users getUser = Repo.GetUserByName(user.Name).Result;
                 dispUser = new UserModel
                 {
                     Id = getUser.Id,
@@ -86,14 +86,14 @@ namespace WebApplication.Controllers
 
         // POST: api/User
         [HttpPost]
-        public async Task<string> Post([FromBody] string name, bool admin)
+        public async Task<string> Post([FromBody] UserModel user)
         {
             try
             {
                 Library.Users newUser = new Library.Users
                 {
-                    Name = name,
-                    Admin = admin
+                    Name = user.Name,
+                    Admin = user.Admin
                 };
 
                 string addMe = await Repo.AddUser(newUser);
@@ -112,23 +112,26 @@ namespace WebApplication.Controllers
 
         }
 
-        // PUT: api/User/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<string> Delete( UserModel user)
         {
             try
             {
-                Repo.RemoveUser(id);
+                Library.Users getUser = await Repo.GetUserByName(user.Name);
+
+                string deleteMe = await Repo.RemoveUser(getUser.Id);
+
+                if (!bool.Parse(deleteMe))
+                {
+                    return deleteMe;
+                }
+
+                return "User deleted!";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Response.StatusCode = 500;
+                return StatusCode(500, ex).ToString();
             }
         }
     }

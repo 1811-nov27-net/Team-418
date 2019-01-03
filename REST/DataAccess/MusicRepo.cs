@@ -291,7 +291,7 @@ namespace DataAccess
         {
             try
             {
-                Albums awaitMe = await _db.Albums.Where(a => a.AlName == name).Where(ar => ar.AlArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
+                Albums awaitMe = await _db.Albums.Include(x => x.AlArtistNavigation).Where(a => a.AlName == name).Where(ar => ar.AlArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
 
                 if (awaitMe == null)
                 {
@@ -636,7 +636,7 @@ namespace DataAccess
         {
             try
             {
-                Songs awaitMe = await _db.Songs.Where(a => a.SName == name).Where(ar => ar.SArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
+                Songs awaitMe = await _db.Songs.Include(x => x.SArtistNavigation).Where(a => a.SName == name).Where(ar => ar.SArtist == artistId).AsNoTracking().FirstOrDefaultAsync();
 
                 if (awaitMe == null)
                 {

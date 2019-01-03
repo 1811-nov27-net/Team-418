@@ -130,14 +130,15 @@ namespace WebApplication.Controllers
                         Console.WriteLine(artistError);
                     }
                 }
-                
+
+                Library.Artists getArtist = await Repo.GetArtistByName(value.Artist);
+                Library.Albums getAlbum = await Repo.GetAlbumByNameAndArtist(value.Album, getArtist.Id);
 
                 // check if album exists
                 // if not, add it to the DB
                 if (value.Album != null)
-                {
-                    Library.Artists getArtist = await Repo.GetArtistByName(value.Artist);
-                    if (await Repo.GetAlbumByNameAndArtist(value.Album, getArtist.Id) == null)
+                {                
+                    if (getAlbum == null)
                     {
                         Library.Albums checkAlbum = new Library.Albums
                         {
@@ -177,6 +178,16 @@ namespace WebApplication.Controllers
                 {
                     Console.WriteLine(songError);
                 }
+
+                // Pull the song back out of the database to get the database-generated ID so it can be added to the album
+                Song getSongForDbId = await Repo.GetSongByNameAndArtist(newSong.Name, getArtist.Id);
+
+                string addToAlbum = await Repo.AddSongToAlbum(getSongForDbId.Id, getAlbum.Id);
+                if (!bool.Parse(addToAlbum))
+                {
+                    Console.WriteLine(addToAlbum);
+                }
+
             }
             catch (Exception)
             {

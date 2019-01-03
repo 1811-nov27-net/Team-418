@@ -22,16 +22,14 @@ namespace WebApplication.Controllers
 
         // GET: api/Favorite/5
         [HttpGet("{userName}")]
-        public async Task<ActionResult<IEnumerable<FavoriteModel>>> Get(string userName)
+        public async Task<ActionResult<IEnumerable<FavoriteModel>>> Get(UserModel user)
         {
             List<FavoriteModel> dispFaves = new List<FavoriteModel>();
 
             try
             {
-                Library.Users getUser = await Repo.GetUserByName(userName);
+                Library.Users getUser = await Repo.GetUserByName(user.Name);
                 IEnumerable<Library.Favorites> faves = await Repo.GetAllFavoritesByUser(getUser.Id);
-
-                Library.Users user = await Repo.GetUserById(getUser.Id);
 
                 foreach (var item in faves)
                 {
@@ -58,13 +56,13 @@ namespace WebApplication.Controllers
 
         // POST: api/Favorite
         [HttpPost]
-        public async Task<string> Post([FromBody] string userName, string songName)
+        public async Task<string> Post([FromBody] FavoriteModel newFave)
         {
             try
             {
-                Library.Users user = await Repo.GetUserByName(userName);
+                Library.Users user = await Repo.GetUserByName(newFave.UserName);
                 IEnumerable<Library.Song> getSongFromHere = await Repo.GetAllSongs();
-                Library.Song song = getSongFromHere.Where(x => x.Name == songName).FirstOrDefault();
+                Library.Song song = getSongFromHere.Where(x => x.Name == newFave.SongName).FirstOrDefault();
 
                 string addMe = await Repo.AddFavorite(user.Id, song.Id);
 
@@ -83,13 +81,13 @@ namespace WebApplication.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public async Task<string> Delete(string userName, string songName)
+        public async Task<string> Delete(FavoriteModel newFave)
         {
             try
             {
-                Library.Users user = await Repo.GetUserByName(userName);
+                Library.Users user = await Repo.GetUserByName(newFave.UserName);
                 IEnumerable<Library.Song> getSongFromHere = await Repo.GetAllSongs();
-                Library.Song song = getSongFromHere.Where(x => x.Name == songName).FirstOrDefault();
+                Library.Song song = getSongFromHere.Where(x => x.Name == newFave.SongName).FirstOrDefault();
 
                 string removeMe = await Repo.RemoveFavorite(user.Id, song.Id);
 

@@ -39,4 +39,3 @@ $('.favorite-card-button').click(function () {
     }
 });
 
-
